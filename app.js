@@ -67,8 +67,8 @@ const POINTS = {
 // ============================================
 
 class BoulderingTracker {
-    constructor() {
-        this.currentMonth = CURRENT_MONTH;
+    constructor(currentMonth) {
+        this.currentMonth = currentMonth;
         this.problems = [];
         this.init();
     }
@@ -340,5 +340,5 @@ class BoulderingTracker {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    window.tracker = new BoulderingTracker();
+    window.tracker = new BoulderingTracker(CURRENT_MONTH);
 });
