@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Castle Ladder - Bouldering Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧗 Vibe Castle Ladder</h1>
+            <p class="subtitle">Track your bouldering progress</p>
+        </header>
+
+        <main>
+            <section class="ladder-grid-section">
+                <h2>Ladder Progress</h2>
+                <div class="ladder-grid">
+                    <!-- Row 1 -->
+                    <div class="ladder-row">
+                        <div class="ladder-group">
+                            <div class="ladder-box" data-ladder="1"></div>
+                            <div class="ladder-box" data-ladder="2"></div>
+                            <div class="ladder-box" data-ladder="3"></div>
+                            <div class="ladder-box" data-ladder="4"></div>
+                            <div class="ladder-box" data-ladder="5"></div>
+                        </div>
+                        <div class="ladder-group">
+                            <div class="ladder-box" data-ladder="6"></div>
+                            <div class="ladder-box" data-ladder="7"></div>
+                            <div class="ladder-box" data-ladder="8"></div>
+                            <div class="ladder-box" data-ladder="9"></div>
+                            <div class="ladder-box" data-ladder="10"></div>
+                        </div>
+                    </div>
+                    <!-- Row 2 -->
+                    <div class="ladder-row">
+                        <div class="ladder-group">
+                            <div class="ladder-box" data-ladder="11"></div>
+                            <div class="ladder-box" data-ladder="12"></div>
+                            <div class="ladder-box" data-ladder="13"></div>
+                            <div class="ladder-box" data-ladder="14"></div>
+                            <div class="ladder-box" data-ladder="15"></div>
+                        </div>
+                        <div class="ladder-group">
+                            <div class="ladder-box" data-ladder="16"></div>
+                            <div class="ladder-box" data-ladder="17"></div>
+                            <div class="ladder-box" data-ladder="18"></div>
+                            <div class="ladder-box" data-ladder="19"></div>
+                            <div class="ladder-box" data-ladder="20"></div>
+                        </div>
+                        <div class="ladder-group">
+                            <div class="ladder-box bonus" data-ladder="21"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="filter-section">
+                <label for="areaFilter">Filter by Area:</label>
+                <select id="areaFilter">
+                    <option value="all">All Areas</option>
+                </select>
+
+                <label for="statusFilter">Filter by Status:</label>
+                <select id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="not-started">Not Started</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </section>
+
+            <section class="problems-section">
+                <h2>Problems</h2>
+                <div id="problemsList" class="problems-list">
+                    <!-- Problems will be dynamically inserted here by JavaScript -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

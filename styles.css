@@ -1,0 +1,283 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+header h1 {
+    color: #333;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.1em;
+}
+
+/* Ladder Grid Section */
+.ladder-grid-section {
+    margin-bottom: 40px;
+}
+
+.ladder-grid-section h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 1.8em;
+}
+
+.ladder-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.ladder-row {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.ladder-group {
+    display: flex;
+    gap: 10px;
+}
+
+.ladder-box {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #333;
+    border-radius: 8px;
+    background: white;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+}
+
+.ladder-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.ladder-box.completed {
+    background: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%);
+    border-color: #A0A0A0;
+}
+
+.ladder-box.bonus.completed {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    border-color: #DAA520;
+}
+
+.ladder-box::after {
+    content: attr(data-ladder);
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75em;
+    color: #666;
+    font-weight: 600;
+}
+
+.ladder-box.bonus::after {
+    content: 'B';
+    color: #DAA520;
+    font-weight: bold;
+}
+
+/* Filter Section */
+.filter-section {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filter-section label {
+    font-weight: 600;
+    color: #333;
+}
+
+.filter-section select {
+    padding: 8px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    background: white;
+    transition: border-color 0.3s;
+}
+
+.filter-section select:hover {
+    border-color: #667eea;
+}
+
+/* Problems Section */
+.problems-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.problems-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.problem-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px 20px;
+    background: white;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.problem-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.problem-card.completed {
+    border-color: #4caf50;
+    background: #f1f8f4;
+}
+
+.problem-card.in-progress {
+    border-color: #ff9800;
+    background: #fff8f1;
+}
+
+.problem-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.problem-name {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+}
+
+.problem-location {
+    color: #666;
+    font-size: 0.95em;
+}
+
+.problem-color-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    flex-shrink: 0;
+}
+
+.problem-status {
+    display: flex;
+    gap: 8px;
+}
+
+.status-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 600;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.status-btn.not-started {
+    background: #e0e0e0;
+    color: #666;
+}
+
+.status-btn.in-progress {
+    background: #ff9800;
+    color: white;
+}
+
+.status-btn.completed {
+    background: #4caf50;
+    color: white;
+}
+
+.status-btn:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.status-btn.active {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 2em;
+    }
+
+    .ladder-box {
+        width: 40px;
+        height: 40px;
+    }
+
+    .ladder-group {
+        gap: 8px;
+    }
+
+    .ladder-row {
+        gap: 20px;
+    }
+
+    .problem-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .problem-status {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .status-btn {
+        width: 100%;
+    }
+}
