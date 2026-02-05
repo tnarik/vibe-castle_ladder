@@ -22,7 +22,7 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 2px solid #f0f0f0;
 }
@@ -38,6 +38,49 @@ header h1 {
     font-size: 1.1em;
 }
 
+/* Statistics Section */
+.stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card.highlight {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.max-points {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
 /* Ladder Grid Section */
 .ladder-grid-section {
     margin-bottom: 40px;
@@ -46,8 +89,50 @@ header h1 {
 .ladder-grid-section h2 {
     text-align: center;
     color: #333;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     font-size: 1.8em;
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+}
+
+.legend-color {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #333;
+    border-radius: 4px;
+}
+
+.legend-color.gold {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+}
+
+.legend-color.silver {
+    background: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%);
+}
+
+.legend-color.bronze {
+    background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+}
+
+.legend-color.gray {
+    background: linear-gradient(135deg, #50C878 0%, #2E8B57 100%);
 }
 
 .ladder-grid {
@@ -84,14 +169,37 @@ header h1 {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.ladder-box.completed {
-    background: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%);
-    border-color: #A0A0A0;
-}
-
-.ladder-box.bonus.completed {
+/* Gold - 1st attempt (10 points) */
+.ladder-box.completed-1st {
     background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
     border-color: #DAA520;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+/* Silver - 2nd attempt (7 points) */
+.ladder-box.completed-2nd {
+    background: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%);
+    border-color: #A0A0A0;
+    box-shadow: 0 0 15px rgba(192, 192, 192, 0.5);
+}
+
+/* Bronze - 3rd attempt (4 points) */
+.ladder-box.completed-3rd {
+    background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
+    border-color: #8B4513;
+    box-shadow: 0 0 15px rgba(205, 127, 50, 0.5);
+}
+
+/* Emerald Green - 4+ attempts (1 point) */
+.ladder-box.completed-4th {
+    background: linear-gradient(135deg, #50C878 0%, #2E8B57 100%);
+    border-color: #228B22;
+    box-shadow: 0 0 15px rgba(80, 200, 120, 0.5);
+}
+
+/* Bonus box gets special gold treatment for 1st attempt */
+.ladder-box.bonus.completed-1st {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
 }
 
 .ladder-box::after {
@@ -142,6 +250,13 @@ header h1 {
 /* Problems Section */
 .problems-section h2 {
     color: #333;
+    margin-bottom: 10px;
+}
+
+.tap-hint {
+    color: #666;
+    font-size: 0.9em;
+    font-style: italic;
     margin-bottom: 20px;
 }
 
@@ -168,14 +283,29 @@ header h1 {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-.problem-card.completed {
-    border-color: #4caf50;
-    background: #f1f8f4;
+/* Different border colors based on completion status */
+.problem-card[class*="attempt"] {
+    border-width: 3px;
 }
 
-.problem-card.in-progress {
-    border-color: #ff9800;
-    background: #fff8f1;
+.problem-card.1st-attempt {
+    border-color: #FFD700;
+    background: linear-gradient(to right, #fffef5, white);
+}
+
+.problem-card.2nd-attempt {
+    border-color: #C0C0C0;
+    background: linear-gradient(to right, #f8f8f8, white);
+}
+
+.problem-card.3rd-attempt {
+    border-color: #CD7F32;
+    background: linear-gradient(to right, #fff8f0, white);
+}
+
+.problem-card.4th-plus {
+    border-color: #50C878;
+    background: linear-gradient(to right, #f0fdf4, white);
 }
 
 .problem-info {
@@ -204,44 +334,109 @@ header h1 {
     flex-shrink: 0;
 }
 
+.problem-points {
+    font-weight: bold;
+    color: #667eea;
+    font-size: 0.95em;
+    min-width: 45px;
+    text-align: right;
+}
+
+.problem-points.bonus-indicator {
+    color: #FFD700;
+    font-weight: 700;
+}
+
+.problem-card.bonus-problem {
+    border-color: #FFD700;
+    background: linear-gradient(to right, #fffef5, white);
+}
+
 .problem-status {
     display: flex;
     gap: 8px;
 }
 
-.status-btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
+/* Attempt Buttons */
+.attempt-btn {
+    padding: 8px 14px;
+    border: 2px solid transparent;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.8em;
-    font-weight: 600;
-    transition: all 0.3s;
+    font-size: 0.85em;
+    font-weight: 700;
+    transition: all 0.2s;
     white-space: nowrap;
-}
-
-.status-btn.not-started {
-    background: #e0e0e0;
+    background: white;
     color: #666;
 }
 
-.status-btn.in-progress {
-    background: #ff9800;
-    color: white;
-}
-
-.status-btn.completed {
-    background: #4caf50;
-    color: white;
-}
-
-.status-btn:hover {
-    opacity: 0.8;
+.attempt-btn:hover {
     transform: scale(1.05);
 }
 
-.status-btn.active {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+.attempt-btn.first {
+    border-color: #FFD700;
+    color: #B8860B;
+}
+
+.attempt-btn.first:hover {
+    background: #FFFACD;
+}
+
+.attempt-btn.first.active {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: white;
+    border-color: #DAA520;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+.attempt-btn.second {
+    border-color: #C0C0C0;
+    color: #808080;
+}
+
+.attempt-btn.second:hover {
+    background: #F5F5F5;
+}
+
+.attempt-btn.second.active {
+    background: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%);
+    color: #333;
+    border-color: #A0A0A0;
+    box-shadow: 0 2px 8px rgba(192, 192, 192, 0.4);
+}
+
+.attempt-btn.third {
+    border-color: #CD7F32;
+    color: #8B4513;
+}
+
+.attempt-btn.third:hover {
+    background: #FFF8F0;
+}
+
+.attempt-btn.third.active {
+    background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
+    color: white;
+    border-color: #8B4513;
+    box-shadow: 0 2px 8px rgba(205, 127, 50, 0.4);
+}
+
+.attempt-btn.fourth {
+    border-color: #50C878;
+    color: #2E8B57;
+}
+
+.attempt-btn.fourth:hover {
+    background: #f0fdf4;
+}
+
+.attempt-btn.fourth.active {
+    background: linear-gradient(135deg, #50C878 0%, #2E8B57 100%);
+    color: white;
+    border-color: #228B22;
+    box-shadow: 0 2px 8px rgba(80, 200, 120, 0.4);
 }
 
 /* Responsive Design */
@@ -254,6 +449,10 @@ header h1 {
         font-size: 2em;
     }
 
+    .stats-section {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
     .ladder-box {
         width: 45px;
         height: 45px;
@@ -262,7 +461,7 @@ header h1 {
     .ladder-row {
         display: flex;
         align-items: flex-start;
-        flex-direction: column; /* stack groups in this row */
+        flex-direction: column;
         gap: 26px;
         width: 100%;
     }
@@ -270,7 +469,7 @@ header h1 {
     .ladder-group {
         display: flex;
         gap: 12px;
-        flex-wrap: wrap; /* allow boxes within a group to wrap to next line */
+        flex-wrap: wrap;
         width: auto;
         align-items: center;
     }
@@ -280,12 +479,19 @@ header h1 {
         align-items: flex-start;
     }
 
-    .problem-status {
+    .problem-info {
         width: 100%;
-        flex-direction: column;
+        flex-wrap: wrap;
     }
 
-    .status-btn {
+    .problem-status {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .attempt-btn {
         width: 100%;
     }
 }
@@ -298,5 +504,11 @@ header h1 {
 
     .ladder-group {
         gap: 8px;
+    }
+
+    .legend {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
 }

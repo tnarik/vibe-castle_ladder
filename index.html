@@ -14,8 +14,43 @@
         </header>
 
         <main>
+            <!-- Statistics Section -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-value" id="progressPercentage">0/21</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+                <div class="stat-card highlight">
+                    <div class="stat-value" id="totalPoints">0</div>
+                    <div class="stat-label">Points <span class="max-points">/ <span id="maxPoints">210</span></span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="firstAttempts">0</div>
+                    <div class="stat-label">First Attempts</div>
+                </div>
+            </section>
+
+            <!-- Ladder Grid Section -->
             <section class="ladder-grid-section">
                 <h2>Ladder Progress</h2>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color gold"></div>
+                        <span>1st attempt (10 pts)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color silver"></div>
+                        <span>2nd attempt (7 pts)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color bronze"></div>
+                        <span>3rd attempt (4 pts)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color gray"></div>
+                        <span>4+ attempts (1 pt)</span>
+                    </div>
+                </div>
                 <div class="ladder-grid">
                     <!-- Row 1 -->
                     <div class="ladder-row">
@@ -65,15 +100,15 @@
 
                 <label for="statusFilter">Filter by Status:</label>
                 <select id="statusFilter">
-                    <option value="all">All Status</option>
-                    <option value="not-started">Not Started</option>
-                    <option value="in-progress">In Progress</option>
+                    <option value="all">All</option>
                     <option value="completed">Completed</option>
+                    <option value="in-progress">In Progress</option>
                 </select>
             </section>
 
             <section class="problems-section">
                 <h2>Problems</h2>
+                <p class="tap-hint">Tap a button again to undo</p>
                 <div id="problemsList" class="problems-list">
                     <!-- Problems will be dynamically inserted here by JavaScript -->
                 </div>

@@ -1,31 +1,66 @@
 // ============================================
 // PROBLEM DATA CONFIGURATION
 // ============================================
+// Problems are organized by month in YYYY-MM format
 // Later: Move this to a separate problems.json file
 
-const PROBLEMS_DATA = [
-    { id: 1, ouyId: "e025878c-8e90-4e82-9e6d-afa72f458ee6", name: "Ladder 1", color: "#FF6B6B", area: "Panels" },
-    { id: 2, ouyId: "5bd20643-74c9-4462-9e68-3d291543adee", name: "Ladder 2", color: "#4ECDC4", area: "Pen" },
-    { id: 3, ouyId: "ef5f9895-3ab6-4a0f-b841-651d1cc45b4f", name: "Ladder 3", color: "#95E1D3", area: "Loft Bloc" },
-    { id: 4, ouyId: "fe35b919-3b04-4536-ac2e-00530759294b", name: "Ladder 4", color: "#F38181", area: "Catacomb" },
-    { id: 5, ouyId: "be767bd2-a713-465b-8bbb-505801e99c94", name: "Ladder 5", color: "#FFA07A", area: "Loft Bloc" },
-    { id: 6, ouyId: "6ade6820-3cc7-428b-880f-b114c80ec9e2", name: "Ladder 6", color: "#98D8C8", area: "Pump Room" },
-    { id: 7, ouyId: "9dade1ed-129d-420a-b70b-768c57cfa9fd", name: "Ladder 7", color: "#FFBE0B", area: "Loft" },
-    { id: 8, ouyId: "01f5bcc6-d788-4530-9826-69ddb035abd7", name: "Ladder 8", color: "#8338EC", area: "Pen" },
-    { id: 9, ouyId: "309c0da4-256d-4b03-ae37-95c4970db833", name: "Ladder 9", color: "#FF6B6B", area: "Loft" },
-    { id: 10, ouyId: "2dedfcb1-c933-4196-a79a-dfdd0d5e490d", name: "Ladder 10", color: "#4ECDC4", area: "Catacomb" },
-    { id: 11, ouyId: "e719e0f3-b03a-426e-82e9-377465116c6d", name: "Ladder 11", color: "#95E1D3", area: "Panels" },
-    { id: 12, ouyId: "9736f4b7-c330-4858-b030-52cb7d0c0ef4", name: "Ladder 12", color: "#F38181", area: "Loft Block" },
-    { id: 13, ouyId: "794ee848-46b0-47dd-9e6c-baf4a1d11c60", name: "Ladder 13", color: "#FFA07A", area: "Pen" },
-    { id: 14, ouyId: "05a0d931-ae3a-46ee-8c40-74f117d91ee5", name: "Ladder 14", color: "#98D8C8", area: "Panels" },
-    { id: 15, ouyId: "44baed68-3b58-4c05-a668-c6ea990991f3", name: "Ladder 15", color: "#FFBE0B", area: "Loft" },
-    { id: 16, ouyId: "ddc1e3de-e0ac-4863-8e15-7301d33cde90", name: "Ladder 16", color: "#8338EC", area: "Loft Bloc" },
-    { id: 17, ouyId: "d1dc8ea5-d98c-456b-8da9-b7f22e555c7c", name: "Ladder 17", color: "#FF6B6B", area: "Pen" },
-    { id: 18, ouyId: "17f31b20-9dfd-4376-913e-ea780c802e08", name: "Ladder 18", color: "#4ECDC4", area: "Catacomb" },
-    { id: 19, ouyId: "bf183cc4-ee73-47a2-ae9d-35c58ff339ec", name: "Ladder 19", color: "#95E1D3", area: "Loft Bloc" },
-    { id: 20, ouyId: "cbc029e7-122a-458c-a5d0-82dedaa7d597", name: "Ladder 20", color: "#F38181", area: "Loft" },
-    { id: 21, ouyId: "894782a1-368e-4697-a929-835a278aa69e", name: "Ladder Bonus", color: "#FFD700", area: "Loft" },
-];
+const PROBLEMS_BY_MONTH = {
+    '2026-02': [
+        { id: 1, ouyId: "e025878c-8e90-4e82-9e6d-afa72f458ee6", name: "Ladder 1", color: "#FF6B6B", area: "Panels" },
+        { id: 2, ouyId: "5bd20643-74c9-4462-9e68-3d291543adee", name: "Ladder 2", color: "#4ECDC4", area: "Pen" },
+        { id: 3, ouyId: "ef5f9895-3ab6-4a0f-b841-651d1cc45b4f", name: "Ladder 3", color: "#95E1D3", area: "Loft Bloc" },
+        { id: 4, ouyId: "fe35b919-3b04-4536-ac2e-00530759294b", name: "Ladder 4", color: "#F38181", area: "Catacomb" },
+        { id: 5, ouyId: "be767bd2-a713-465b-8bbb-505801e99c94", name: "Ladder 5", color: "#FFA07A", area: "Loft Bloc" },
+        { id: 6, ouyId: "6ade6820-3cc7-428b-880f-b114c80ec9e2", name: "Ladder 6", color: "#98D8C8", area: "Pump Room" },
+        { id: 7, ouyId: "9dade1ed-129d-420a-b70b-768c57cfa9fd", name: "Ladder 7", color: "#FFBE0B", area: "Loft" },
+        { id: 8, ouyId: "01f5bcc6-d788-4530-9826-69ddb035abd7", name: "Ladder 8", color: "#8338EC", area: "Pen" },
+        { id: 9, ouyId: "309c0da4-256d-4b03-ae37-95c4970db833", name: "Ladder 9", color: "#FF6B6B", area: "Loft" },
+        { id: 10, ouyId: "2dedfcb1-c933-4196-a79a-dfdd0d5e490d", name: "Ladder 10", color: "#4ECDC4", area: "Catacomb" },
+        { id: 11, ouyId: "e719e0f3-b03a-426e-82e9-377465116c6d", name: "Ladder 11", color: "#95E1D3", area: "Panels" },
+        { id: 12, ouyId: "9736f4b7-c330-4858-b030-52cb7d0c0ef4", name: "Ladder 12", color: "#F38181", area: "Loft Block" },
+        { id: 13, ouyId: "794ee848-46b0-47dd-9e6c-baf4a1d11c60", name: "Ladder 13", color: "#FFA07A", area: "Pen" },
+        { id: 14, ouyId: "05a0d931-ae3a-46ee-8c40-74f117d91ee5", name: "Ladder 14", color: "#98D8C8", area: "Panels" },
+        { id: 15, ouyId: "44baed68-3b58-4c05-a668-c6ea990991f3", name: "Ladder 15", color: "#FFBE0B", area: "Loft" },
+        { id: 16, ouyId: "ddc1e3de-e0ac-4863-8e15-7301d33cde90", name: "Ladder 16", color: "#8338EC", area: "Loft Bloc" },
+        { id: 17, ouyId: "d1dc8ea5-d98c-456b-8da9-b7f22e555c7c", name: "Ladder 17", color: "#FF6B6B", area: "Pen" },
+        { id: 18, ouyId: "17f31b20-9dfd-4376-913e-ea780c802e08", name: "Ladder 18", color: "#4ECDC4", area: "Catacomb" },
+        { id: 19, ouyId: "bf183cc4-ee73-47a2-ae9d-35c58ff339ec", name: "Ladder 19", color: "#95E1D3", area: "Loft Bloc" },
+        { id: 20, ouyId: "cbc029e7-122a-458c-a5d0-82dedaa7d597", name: "Ladder 20", color: "#F38181", area: "Loft" },
+        { id: 21, ouyId: "894782a1-368e-4697-a929-835a278aa69e", name: "Ladder Bonus", color: "#FFD700", area: "Loft" },
+    ]
+    // Future months can be added here:
+    // '2026-03': [ ... ],
+    // '2026-04': [ ... ],
+    // etc.
+};
+
+// Current month to display (automatically determined from current date)
+const CURRENT_MONTH = (() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+})();
+
+// ============================================
+// COMPLETION STATUS & POINTS CONFIGURATION
+// ============================================
+
+const COMPLETION_STATUS = {
+    NOT_COMPLETED: 'not-completed',
+    FIRST_ATTEMPT: '1st-attempt',
+    SECOND_ATTEMPT: '2nd-attempt',
+    THIRD_ATTEMPT: '3rd-attempt',
+    FOURTH_PLUS: '4th-plus'
+};
+
+const POINTS = {
+    [COMPLETION_STATUS.NOT_COMPLETED]: 0,
+    [COMPLETION_STATUS.FIRST_ATTEMPT]: 10,
+    [COMPLETION_STATUS.SECOND_ATTEMPT]: 7,
+    [COMPLETION_STATUS.THIRD_ATTEMPT]: 4,
+    [COMPLETION_STATUS.FOURTH_PLUS]: 1
+};
 
 // ============================================
 // STATE MANAGEMENT
@@ -33,6 +68,7 @@ const PROBLEMS_DATA = [
 
 class BoulderingTracker {
     constructor() {
+        this.currentMonth = CURRENT_MONTH;
         this.problems = [];
         this.init();
     }
@@ -41,6 +77,7 @@ class BoulderingTracker {
         this.loadFromLocalStorage();
         this.renderProblems();
         this.updateLadderGrid();
+        this.updateStats();
         this.populateAreaFilter();
         this.attachEventListeners();
     }
@@ -48,40 +85,117 @@ class BoulderingTracker {
     loadFromLocalStorage() {
         const savedProgress = localStorage.getItem('bouldering-progress');
         
+        // Get problems for current month
+        const problemsData = PROBLEMS_BY_MONTH[this.currentMonth] || [];
+        
         if (savedProgress) {
-            const progressMap = JSON.parse(savedProgress);
+            const allProgressData = JSON.parse(savedProgress);
+            // Get progress for current month
+            const progressMap = allProgressData[this.currentMonth] || {};
             
-            // Merge saved progress with problem data
-            this.problems = PROBLEMS_DATA.map(problem => ({
-                ...problem,
-                status: progressMap[problem.id] || 'not-started'
-            }));
+            // Merge saved progress with problem data (using ouyId as key)
+            this.problems = problemsData.map(problem => {
+                let status = progressMap[problem.ouyId];
+                
+                // Migrate old status values to new ones
+                if (status === 'not-started' || status === 'in-progress') {
+                    status = null; // Treat as not-completed (no need to store)
+                } else if (status === 'completed') {
+                    // Old "completed" becomes "4th-plus" (lowest completion)
+                    status = COMPLETION_STATUS.FOURTH_PLUS;
+                }
+                
+                // If no status or not-completed, use null (implicit not-completed)
+                if (!status || status === COMPLETION_STATUS.NOT_COMPLETED) {
+                    status = null;
+                }
+                
+                return {
+                    ...problem,
+                    status: status
+                };
+            });
         } else {
-            // Initialize with default status
-            this.problems = PROBLEMS_DATA.map(problem => ({
+            // Initialize with default status (null = not-completed)
+            this.problems = problemsData.map(problem => ({
                 ...problem,
-                status: 'not-started'
+                status: null
             }));
         }
     }
 
     saveToLocalStorage() {
-        // Save only the progress (id -> status mapping)
-        const progressMap = {};
+        // Load existing data for all months
+        const savedProgress = localStorage.getItem('bouldering-progress');
+        const allProgressData = savedProgress ? JSON.parse(savedProgress) : {};
+        
+        // Update only current month's data (using ouyId as key)
+        const monthProgressMap = {};
         this.problems.forEach(problem => {
-            progressMap[problem.id] = problem.status;
+            if (problem.status && problem.status !== COMPLETION_STATUS.NOT_COMPLETED) {
+                monthProgressMap[problem.ouyId] = problem.status;
+            }
         });
-        localStorage.setItem('bouldering-progress', JSON.stringify(progressMap));
+        
+        // Store with month key
+        allProgressData[this.currentMonth] = monthProgressMap;
+        
+        localStorage.setItem('bouldering-progress', JSON.stringify(allProgressData));
     }
 
-    updateProblemStatus(problemId, newStatus) {
-        const problem = this.problems.find(p => p.id === problemId);
+    updateProblemStatus(problemOuyId, newStatus) {
+        const problem = this.problems.find(p => p.ouyId === problemOuyId);
         if (problem) {
-            problem.status = newStatus;
+            // Toggle logic: if clicking the same status, reset to not-completed (null)
+            if (problem.status === newStatus) {
+                problem.status = null; // null = not-completed
+            } else {
+                problem.status = newStatus;
+            }
+            
             this.saveToLocalStorage();
             this.renderProblems();
             this.updateLadderGrid();
+            this.updateStats();
         }
+    }
+
+    calculateTotalPoints() {
+        return this.problems.reduce((total, problem) => {
+            // Skip bonus problem (id 21) - it doesn't contribute to points
+            if (problem.id === 21) {
+                return total;
+            }
+            // null/undefined = not-completed = 0 points
+            const points = problem.status ? POINTS[problem.status] : 0;
+            return total + points;
+        }, 0);
+    }
+
+    getCompletionStats() {
+        const total = this.problems.length;
+        const completed = this.problems.filter(p => 
+            p.status && p.status !== COMPLETION_STATUS.NOT_COMPLETED
+        ).length;
+        const firstAttempts = this.problems.filter(p => 
+            p.status === COMPLETION_STATUS.FIRST_ATTEMPT
+        ).length;
+        const points = this.calculateTotalPoints();
+        // Max points excludes bonus problem (20 regular problems × 10 points)
+        const maxPoints = (total - 1) * 10; // Subtract 1 for bonus problem
+        
+        return { total, completed, firstAttempts, points, maxPoints };
+    }
+
+    updateStats() {
+        const stats = this.getCompletionStats();
+        
+        document.getElementById('firstAttempts').textContent = stats.firstAttempts;
+        document.getElementById('totalPoints').textContent = stats.points;
+        document.getElementById('maxPoints').textContent = stats.maxPoints;
+        
+        // Update progress as "completed / total"
+        document.getElementById('progressPercentage').textContent = `${stats.completed}/${stats.total}`;
     }
 
     getFilteredProblems() {
@@ -90,7 +204,16 @@ class BoulderingTracker {
 
         return this.problems.filter(problem => {
             const matchesArea = areaFilter === 'all' || problem.area === areaFilter;
-            const matchesStatus = statusFilter === 'all' || problem.status === statusFilter;
+            
+            let matchesStatus = true;
+            if (statusFilter === 'completed') {
+                matchesStatus = problem.status && problem.status !== COMPLETION_STATUS.NOT_COMPLETED;
+            } else if (statusFilter === 'in-progress') {
+                matchesStatus = !problem.status || problem.status === COMPLETION_STATUS.NOT_COMPLETED;
+            } else if (statusFilter !== 'all') {
+                matchesStatus = problem.status === statusFilter;
+            }
+            
             return matchesArea && matchesStatus;
         });
     }
@@ -104,40 +227,58 @@ class BoulderingTracker {
             return;
         }
 
-        problemsList.innerHTML = filteredProblems.map(problem => `
-            <div class="problem-card ${problem.status}" data-id="${problem.id}">
-                <div class="problem-info">
-                    <span class="problem-name">${problem.name}</span>
-                    <span class="problem-location">(at ${problem.area})</span>
-                    <div class="problem-color-indicator" style="background-color: ${problem.color}"></div>
+        problemsList.innerHTML = filteredProblems.map(problem => {
+            // Bonus problem (id 21) shows special indicator instead of points
+            const isBonus = problem.id === 21;
+            const points = isBonus ? 0 : (problem.status ? POINTS[problem.status] : 0);
+            const pointsDisplay = isBonus ? '🎟️ Bonus' : `${points} pts`;
+            const statusClass = problem.status || 'not-completed';
+            
+            return `
+                <div class="problem-card ${statusClass} ${isBonus ? 'bonus-problem' : ''}" data-ouy-id="${problem.ouyId}">
+                    <div class="problem-info">
+                        <span class="problem-name">${problem.name}</span>
+                        <span class="problem-location">(at ${problem.area})</span>
+                        <div class="problem-color-indicator" style="background-color: ${problem.color}"></div>
+                        <span class="problem-points ${isBonus ? 'bonus-indicator' : ''}">${pointsDisplay}</span>
+                    </div>
+                    <div class="problem-status">
+                        <button class="attempt-btn first ${problem.status === COMPLETION_STATUS.FIRST_ATTEMPT ? 'active' : ''}" 
+                                data-ouy-id="${problem.ouyId}" 
+                                data-status="${COMPLETION_STATUS.FIRST_ATTEMPT}"
+                                title="${isBonus ? 'Completed - enters raffle' : '10 points'}">
+                            1st
+                        </button>
+                        <button class="attempt-btn second ${problem.status === COMPLETION_STATUS.SECOND_ATTEMPT ? 'active' : ''}" 
+                                data-ouy-id="${problem.ouyId}" 
+                                data-status="${COMPLETION_STATUS.SECOND_ATTEMPT}"
+                                title="${isBonus ? 'Completed - enters raffle' : '7 points'}">
+                            2nd
+                        </button>
+                        <button class="attempt-btn third ${problem.status === COMPLETION_STATUS.THIRD_ATTEMPT ? 'active' : ''}" 
+                                data-ouy-id="${problem.ouyId}" 
+                                data-status="${COMPLETION_STATUS.THIRD_ATTEMPT}"
+                                title="${isBonus ? 'Completed - enters raffle' : '4 points'}">
+                            3rd
+                        </button>
+                        <button class="attempt-btn fourth ${problem.status === COMPLETION_STATUS.FOURTH_PLUS ? 'active' : ''}" 
+                                data-ouy-id="${problem.ouyId}" 
+                                data-status="${COMPLETION_STATUS.FOURTH_PLUS}"
+                                title="${isBonus ? 'Completed - enters raffle' : '1 point'}">
+                            4+
+                        </button>
+                    </div>
                 </div>
-                <div class="problem-status">
-                    <button class="status-btn not-started ${problem.status === 'not-started' ? 'active' : ''}" 
-                            data-id="${problem.id}" 
-                            data-status="not-started">
-                        Not Started
-                    </button>
-                    <button class="status-btn in-progress ${problem.status === 'in-progress' ? 'active' : ''}" 
-                            data-id="${problem.id}" 
-                            data-status="in-progress">
-                        In Progress
-                    </button>
-                    <button class="status-btn completed ${problem.status === 'completed' ? 'active' : ''}" 
-                            data-id="${problem.id}" 
-                            data-status="completed">
-                        ✓ Done
-                    </button>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
-        // Attach click handlers to status buttons
-        document.querySelectorAll('.status-btn').forEach(btn => {
+        // Attach click handlers to attempt buttons
+        document.querySelectorAll('.attempt-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const problemId = parseInt(btn.dataset.id);
+                const problemOuyId = btn.dataset.ouyId;
                 const newStatus = btn.dataset.status;
-                this.updateProblemStatus(problemId, newStatus);
+                this.updateProblemStatus(problemOuyId, newStatus);
             });
         });
     }
@@ -147,10 +288,25 @@ class BoulderingTracker {
         this.problems.forEach(problem => {
             const ladderBox = document.querySelector(`.ladder-box[data-ladder="${problem.id}"]`);
             if (ladderBox) {
-                if (problem.status === 'completed') {
-                    ladderBox.classList.add('completed');
-                } else {
-                    ladderBox.classList.remove('completed');
+                // Remove all completion classes
+                ladderBox.classList.remove('completed-1st', 'completed-2nd', 'completed-3rd', 'completed-4th');
+                
+                // Add appropriate class based on status (null = no class added)
+                if (problem.status) {
+                    switch(problem.status) {
+                        case COMPLETION_STATUS.FIRST_ATTEMPT:
+                            ladderBox.classList.add('completed-1st');
+                            break;
+                        case COMPLETION_STATUS.SECOND_ATTEMPT:
+                            ladderBox.classList.add('completed-2nd');
+                            break;
+                        case COMPLETION_STATUS.THIRD_ATTEMPT:
+                            ladderBox.classList.add('completed-3rd');
+                            break;
+                        case COMPLETION_STATUS.FOURTH_PLUS:
+                            ladderBox.classList.add('completed-4th');
+                            break;
+                    }
                 }
             }
         });
