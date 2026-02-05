@@ -53,8 +53,8 @@ header h1 {
 .ladder-grid {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    align-items: center;
+    gap: 26px;
+    align-items: flex-start;
 }
 
 .ladder-row {
@@ -255,16 +255,24 @@ header h1 {
     }
 
     .ladder-box {
-        width: 40px;
-        height: 40px;
-    }
-
-    .ladder-group {
-        gap: 8px;
+        width: 45px;
+        height: 45px;
     }
 
     .ladder-row {
-        gap: 20px;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column; /* stack groups in this row */
+        gap: 26px;
+        width: 100%;
+    }
+
+    .ladder-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap; /* allow boxes within a group to wrap to next line */
+        width: auto;
+        align-items: center;
     }
 
     .problem-card {
@@ -279,5 +287,16 @@ header h1 {
 
     .status-btn {
         width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .ladder-box {
+        width: 36px;
+        height: 36px;
+    }
+
+    .ladder-group {
+        gap: 8px;
     }
 }
