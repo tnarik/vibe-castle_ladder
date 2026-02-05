@@ -17,7 +17,7 @@ const PROBLEMS_BY_MONTH = {
         { id: 9, ouyId: "309c0da4-256d-4b03-ae37-95c4970db833", name: "Ladder 9", color: "#fafafa", area: "Loft" },
         { id: 10, ouyId: "2dedfcb1-c933-4196-a79a-dfdd0d5e490d", name: "Ladder 10", color: "#d71515", area: "Catacomb" },
         { id: 11, ouyId: "e719e0f3-b03a-426e-82e9-377465116c6d", name: "Ladder 11", color: "#d71515", area: "Panels" },
-        { id: 12, ouyId: "9736f4b7-c330-4858-b030-52cb7d0c0ef4", name: "Ladder 12", color: "#020707", area: "Loft Block" },
+        { id: 12, ouyId: "9736f4b7-c330-4858-b030-52cb7d0c0ef4", name: "Ladder 12", color: "#020707", area: "Loft Bloc" },
         { id: 13, ouyId: "794ee848-46b0-47dd-9e6c-baf4a1d11c60", name: "Ladder 13", color: "#fbff09", area: "Pen" },
         { id: 14, ouyId: "05a0d931-ae3a-46ee-8c40-74f117d91ee5", name: "Ladder 14", color: "#d78ac5", area: "Panels" },
         { id: 15, ouyId: "44baed68-3b58-4c05-a668-c6ea990991f3", name: "Ladder 15", color: "#2458ac", area: "Loft" },
