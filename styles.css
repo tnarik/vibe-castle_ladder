@@ -25,13 +25,21 @@ header {
     margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 2px solid #f0f0f0;
-    position: relative;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
 }
 
 header h1 {
     color: #333;
     font-size: 2.5em;
-    margin-bottom: 10px;
+    margin: 0;
 }
 
 .subtitle {
@@ -40,9 +48,6 @@ header h1 {
 }
 
 .info-button {
-    position: absolute;
-    top: 0;
-    right: 0;
     background: #667eea;
     color: white;
     border: none;
@@ -53,6 +58,7 @@ header h1 {
     cursor: pointer;
     transition: all 0.3s;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
 }
 
 .info-button:hover {
@@ -621,6 +627,10 @@ header h1 {
 @media (max-width: 768px) {
     .container {
         padding: 20px;
+    }
+
+    .header-title {
+        gap: 10px;
     }
 
     header h1 {
