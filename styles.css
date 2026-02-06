@@ -117,6 +117,21 @@ header h1 {
     text-align: center;
 }
 
+.welcome-text {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 35px;
+    border-left: 4px solid #667eea;
+}
+
+.welcome-text p {
+    color: #333;
+    line-height: 1.7;
+    margin: 0;
+    font-size: 1.05em;
+}
+
 .overlay-section {
     margin-bottom: 35px;
 }
