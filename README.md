@@ -8,8 +8,8 @@ Once deployed, access at: `https://[your-username].github.io/vibe-castle_ladder/
 
 ## Features
 
-- 📊 Track 21 bouldering problems (Ladder 1-20 + Bonus)
-- 🎨 Visual progress grid with silver/gold completion boxes
+- 📊 Track all bouldering problems (Ladder 1-20 + Bonus)
+- 🎨 Visual progress grid with gold/silver/bronze/green completion boxes
 - 💾 Persistent storage using localStorage (no backend needed)
 - 🎯 Clean, responsive design
 - 🔍 Filter by area and completion status
@@ -70,23 +70,28 @@ Currently, problems are defined in the `PROBLEMS_DATA` array in `app.js`:
 
 ```javascript
 const PROBLEMS_DATA = [
-    { id: 1, name: "Crimpy Delight", color: "#FF6B6B", area: "Main Wall" },
+   '2026-02': [
+    { id: 1,  ouyId: "some UU(IDv4)", name: "Lader 42", color: "#FF6B6B", area: "Loft" },
     // ... more problems
+   ]
 ];
 ```
 
 ### Problem Properties:
-- `id`: Unique identifier (number)
+- `id`: Unique identifier for the month (number)
+- `ouyId`: Unique identifier (UUIDv4)
 - `name`: Problem name (string)
 - `color`: Hex color code for the problem hold color (string)
 - `area`: Location/section where the problem is found (string)
 
 ## Status Types
 
-Each problem can have one of three statuses:
-- **Not Started**: Haven't attempted yet
-- **In Progress**: Currently working on it
-- **Completed**: Successfully sent!
+Each problem can have one of five statuses:
+- **Not Completed**: Either not tried or a hard one!
+- **1st attempt**: Successfully sent after a single try!
+- **2nd attempt**: Successfully sent after two tries!
+- **3rd attempt**: Successfully sent after three tries!
+- **4th+ attempt**: Successfully sent after four or more tries!
 
 ## Future Enhancements
 
@@ -95,7 +100,6 @@ Each problem can have one of three statuses:
 - [ ] Track attempt history and dates
 - [ ] Export/import functionality
 - [ ] PWA support for offline use
-- [ ] Add problem difficulty/grade tracking
 
 ## Technical Notes
 
