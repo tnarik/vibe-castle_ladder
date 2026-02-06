@@ -353,6 +353,8 @@ function initializeOverlay() {
     const infoButton = document.getElementById('infoButton');
     const closeOverlay = document.getElementById('closeOverlay');
     const closeOverlayButton = document.getElementById('closeOverlayButton');
+    const expandDetailsBtn = document.getElementById('expandDetailsBtn');
+    const expandableDetails = document.getElementById('expandableDetails');
     
     // Check if user has seen the overlay before
     const hasSeenOverlay = localStorage.getItem('hasSeenInfoOverlay');
@@ -363,6 +365,18 @@ function initializeOverlay() {
         localStorage.setItem('hasSeenInfoOverlay', 'true');
     }
     
+    // Expand/collapse details
+    expandDetailsBtn.addEventListener('click', () => {
+        const isExpanded = expandableDetails.classList.contains('expanded');
+        if (isExpanded) {
+            expandableDetails.classList.remove('expanded');
+            expandDetailsBtn.textContent = 'click here for details';
+        } else {
+            expandableDetails.classList.add('expanded');
+            expandDetailsBtn.textContent = 'hide details';
+        }
+    });
+    
     // Open overlay when info button is clicked
     infoButton.addEventListener('click', () => {
         overlay.classList.add('active');
@@ -371,17 +385,26 @@ function initializeOverlay() {
     // Close overlay when X button is clicked
     closeOverlay.addEventListener('click', () => {
         overlay.classList.remove('active');
+        // Collapse details when closing
+        expandableDetails.classList.remove('expanded');
+        expandDetailsBtn.textContent = 'click here for details';
     });
     
     // Close overlay when "Got it!" button is clicked
     closeOverlayButton.addEventListener('click', () => {
         overlay.classList.remove('active');
+        // Collapse details when closing
+        expandableDetails.classList.remove('expanded');
+        expandDetailsBtn.textContent = 'click here for details';
     });
     
     // Close overlay when clicking outside the content
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
             overlay.classList.remove('active');
+            // Collapse details when closing
+            expandableDetails.classList.remove('expanded');
+            expandDetailsBtn.textContent = 'click here for details';
         }
     });
     
@@ -389,6 +412,9 @@ function initializeOverlay() {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && overlay.classList.contains('active')) {
             overlay.classList.remove('active');
+            // Collapse details when closing
+            expandableDetails.classList.remove('expanded');
+            expandDetailsBtn.textContent = 'click here for details';
         }
     });
 }

@@ -126,9 +126,10 @@
             <h2>Castle Boulder Ladder Tracker</h2>
             
             <div class="welcome-text">
-                <p>Welcome! 👋 You're probably here to track your climbs and crush the ladder – so go ahead and get started! But if you're curious about what this is, who made it, or just want to make sure we're not doing anything sketchy with your data, scroll down for the details.</p>
+                <p>Welcome! 👋 You're probably here to track your climbs and crush the ladder – so go ahead and get started! But if you're curious about what this is, who made it, or just want to make sure we're not doing anything sketchy with your data, <button id="expandDetailsBtn" class="expand-btn">click here for details</button>.</p>
             </div>
             
+            <div id="expandableDetails" class="expandable-details">
             <div class="overlay-section">
                 <h3>FAQ</h3>
                 <div class="faq-item">
@@ -176,6 +177,7 @@
                     <li>Any information that could identify you personally</li>
                 </ul>
                 <p class="privacy-note">All your climbing data stays in your browser's local storage and is never sent anywhere. Only anonymous usage statistics are collected via the link shortener.</p>
+            </div>
             </div>
             
             <button class="overlay-button" id="closeOverlayButton">Got it!</button>

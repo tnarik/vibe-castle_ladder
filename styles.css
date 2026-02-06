@@ -138,6 +138,36 @@ header h1 {
     font-size: 1.05em;
 }
 
+.expand-btn {
+    background: none;
+    border: none;
+    color: #667eea;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    font-size: inherit;
+    font-family: inherit;
+    transition: color 0.3s;
+}
+
+.expand-btn:hover {
+    color: #764ba2;
+}
+
+.expandable-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+}
+
+.expandable-details.expanded {
+    max-height: 2000px;
+    opacity: 1;
+    margin-top: 20px;
+}
+
 .overlay-section {
     margin-bottom: 35px;
 }
