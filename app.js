@@ -341,4 +341,54 @@ class BoulderingTracker {
 
 document.addEventListener('DOMContentLoaded', () => {
     window.tracker = new BoulderingTracker(CURRENT_MONTH);
+    initializeOverlay();
 });
+
+// ============================================
+// INFO OVERLAY FUNCTIONALITY
+// ============================================
+
+function initializeOverlay() {
+    const overlay = document.getElementById('infoOverlay');
+    const infoButton = document.getElementById('infoButton');
+    const closeOverlay = document.getElementById('closeOverlay');
+    const closeOverlayButton = document.getElementById('closeOverlayButton');
+    
+    // Check if user has seen the overlay before
+    const hasSeenOverlay = localStorage.getItem('hasSeenInfoOverlay');
+    
+    // Show overlay on first visit
+    if (!hasSeenOverlay) {
+        overlay.classList.add('active');
+        localStorage.setItem('hasSeenInfoOverlay', 'true');
+    }
+    
+    // Open overlay when info button is clicked
+    infoButton.addEventListener('click', () => {
+        overlay.classList.add('active');
+    });
+    
+    // Close overlay when X button is clicked
+    closeOverlay.addEventListener('click', () => {
+        overlay.classList.remove('active');
+    });
+    
+    // Close overlay when "Got it!" button is clicked
+    closeOverlayButton.addEventListener('click', () => {
+        overlay.classList.remove('active');
+    });
+    
+    // Close overlay when clicking outside the content
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            overlay.classList.remove('active');
+        }
+    });
+    
+    // Close overlay on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            overlay.classList.remove('active');
+        }
+    });
+}
