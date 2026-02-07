@@ -381,6 +381,7 @@ header h1 {
 .ladder-box:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-color: #667eea;
 }
 
 /* Gold - 1st attempt (10 points) */
@@ -651,6 +652,31 @@ header h1 {
     color: white;
     border-color: #228B22;
     box-shadow: 0 2px 8px rgba(80, 200, 120, 0.4);
+}
+
+/* Flash Animation */
+@keyframes flashHighlight {
+    0%, 100% {
+        background: inherit;
+        transform: scale(1);
+    }
+    25% {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: scale(1.02);
+    }
+    50% {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: scale(1.02);
+    }
+    75% {
+        background: inherit;
+        transform: scale(1);
+    }
+}
+
+.problem-card.flash-highlight {
+    animation: flashHighlight 1s ease-in-out;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6) !important;
 }
 
 /* Responsive Design */

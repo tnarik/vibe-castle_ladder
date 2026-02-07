@@ -332,6 +332,54 @@ class BoulderingTracker {
         document.getElementById('statusFilter').addEventListener('change', () => {
             this.renderProblems();
         });
+        
+        // Add click listeners to ladder boxes
+        document.querySelectorAll('.ladder-box').forEach(box => {
+            box.addEventListener('click', (e) => {
+                const ladderId = parseInt(e.currentTarget.dataset.ladder);
+                this.scrollToProblem(ladderId);
+            });
+        });
+    }
+    
+    scrollToProblem(ladderId) {
+        const problem = this.problems.find(p => p.id === ladderId);
+        if (!problem) return;
+        
+        // Check if the problem's area is currently filtered out
+        const areaFilter = document.getElementById('areaFilter');
+        if (areaFilter.value !== 'all' && areaFilter.value !== problem.area) {
+            // Change filter to show this problem's area
+            areaFilter.value = problem.area;
+        }
+        
+        // Check if the problem's completion status is filtered out
+        const statusFilter = document.getElementById('statusFilter');
+        const isCompleted = problem.status && problem.status !== COMPLETION_STATUS.NOT_COMPLETED;
+        
+        // If status filter would hide this problem, set it to 'all'
+        if ((statusFilter.value === 'completed' && !isCompleted) ||
+            (statusFilter.value === 'in-progress' && isCompleted)) {
+            statusFilter.value = 'all';
+        }
+        
+        // Re-render problems with updated filters
+        this.renderProblems();
+        
+        // Find the problem card in the DOM (after re-rendering)
+        const problemCard = document.querySelector(`.problem-card[data-ouy-id="${problem.ouyId}"]`);
+        if (problemCard) {
+            // Scroll to the problem card with smooth behavior
+            problemCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Add flash animation
+            problemCard.classList.add('flash-highlight');
+            
+            // Remove animation class after it completes
+            setTimeout(() => {
+                problemCard.classList.remove('flash-highlight');
+            }, 1000);
+        }
     }
 }
 
@@ -342,6 +390,18 @@ class BoulderingTracker {
 document.addEventListener('DOMContentLoaded', () => {
     window.tracker = new BoulderingTracker(CURRENT_MONTH);
     initializeOverlay();
+    
+    // Update subtitle with current month
+    const subtitleElement = document.getElementById('subtitle');
+    if (subtitleElement) {
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        // Parse CURRENT_MONTH (format: 'YYYY-MM')
+        const [year, month] = CURRENT_MONTH.split('-');
+        const monthIndex = parseInt(month, 10) - 1; // Convert to 0-based index
+        const currentMonthName = monthNames[monthIndex];
+        subtitleElement.innerHTML = `Track your progress for <strong>${currentMonthName}</strong>`;
+    }
 });
 
 // ============================================
