@@ -392,10 +392,62 @@ header h1 {
     font-weight: 600;
     z-index: 2000;
     transition: bottom 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toast.success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.toast #toastIcon {
+    font-size: 1.2em;
 }
 
 .toast.show {
     bottom: 30px;
+}
+
+/* Import Confirmation Overlay */
+.import-confirm-content {
+    max-width: 500px;
+    text-align: center;
+}
+
+.import-confirm-message {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.import-confirm-question {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.import-confirm-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.secondary-button {
+    background: #6b7280;
+}
+
+.secondary-button:hover {
+    background: #4b5563;
+}
+
+.primary-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.primary-button:hover {
+    opacity: 0.9;
 }
 
 .max-points {

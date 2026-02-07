@@ -7,7 +7,7 @@
 // ============================================
 // SHARE CONFIGURATION
 // ============================================
-const SHARE_BASE_URL = 'example.com';
+const SHARE_BASE_URL = 'castle-ladder.short.gy';
 
 // Encoding/Decoding functions for share codes
 function encodeProgressToShareCode(problems, month) {
@@ -27,8 +27,11 @@ function encodeProgressToShareCode(problems, month) {
         [COMPLETION_STATUS.FOURTH_PLUS]: '4'
     };
     
+    // Sort problems by id before encoding to ensure consistent order
+    const sortedProblems = problems.slice().sort((a, b) => a.id - b.id);
+    
     // Convert all 21 problems to digits
-    const digits = problems.map(p => statusToDigit[p.status] || '0').join('');
+    const digits = sortedProblems.map(p => statusToDigit[p.status] || '0').join('');
     
     // Break into chunks: 5-5-5-5-1
     const chunks = [
@@ -99,8 +102,8 @@ function decodeShareCodeToProgress(shareCode) {
     // Convert to array of statuses
     const statuses = decoded.split('').map(d => digitToStatus[d]);
     
-    // Get problems for this month
-    const monthProblems = PROBLEMS_BY_MONTH[decodedMonth];
+    // Get problems for this month and sort by id
+    const monthProblems = (PROBLEMS_BY_MONTH[decodedMonth] || []).sort((a, b) => a.id - b.id);
     
     if (!monthProblems) {
         console.error('No problem data found for month:', decodedMonth);
@@ -211,8 +214,8 @@ class BoulderingTracker {
     loadFromLocalStorage() {
         const savedProgress = localStorage.getItem('bouldering-progress');
         
-        // Get problems for current month
-        const problemsData = PROBLEMS_BY_MONTH[this.month] || [];
+        // Get problems for current month and sort by id
+        const problemsData = (PROBLEMS_BY_MONTH[this.month] || []).sort((a, b) => a.id - b.id);
         
         if (savedProgress) {
             const allProgressData = JSON.parse(savedProgress);
@@ -341,7 +344,7 @@ class BoulderingTracker {
             }
             
             return matchesArea && matchesStatus;
-        });
+        }).sort((a, b) => a.id - b.id); // Sort by id to ensure consistent display order
     }
 
     renderProblems() {
@@ -617,9 +620,7 @@ function checkForShareCode() {
     // Check URL hash for share code (e.g., example.com/#3189361a61a61a61a2)
     const hash = window.location.hash.slice(1); // Remove the # symbol
     
-    // Also check path for share code (e.g., example.com/3189361a61a61a61a2)
-    const pathParts = window.location.pathname.split('/').filter(p => p.length > 0);
-    const shareCode = hash || (pathParts.length > 0 ? pathParts[pathParts.length - 1] : null);
+    const shareCode = hash || null;
     
     if (shareCode && shareCode.length === 18) {
         console.log('='.repeat(60));
@@ -646,12 +647,103 @@ function checkForShareCode() {
             console.log('localStorage-compatible JSON:');
             console.log(JSON.stringify(decoded.localStorageData, null, 2));
             console.log('');
-            console.log('Note: This does NOT overwrite your local progress.');
-            console.log('='.repeat(60));
+            
+            // Check if there's existing progress
+            const existingProgress = localStorage.getItem('bouldering-progress');
+            
+            if (!existingProgress) {
+                // No existing progress - import directly
+                importProgress(decoded.localStorageData);
+                console.log('Progress imported successfully (no existing data).');
+                console.log('='.repeat(60));
+            } else {
+                // Existing progress found - show confirmation
+                console.log('Existing progress found - waiting for user confirmation.');
+                console.log('='.repeat(60));
+                showImportConfirmation(decoded.localStorageData);
+            }
         } else {
             console.error('Failed to decode share code');
         }
     }
+}
+
+function importProgress(localStorageData) {
+    // Import the decoded progress into localStorage
+    const existingProgress = localStorage.getItem('bouldering-progress');
+    const allProgressData = existingProgress ? JSON.parse(existingProgress) : {};
+    
+    // Merge the imported data
+    Object.assign(allProgressData, localStorageData);
+    
+    // Save to localStorage
+    localStorage.setItem('bouldering-progress', JSON.stringify(allProgressData));
+    
+    // Remove share code from URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+    
+    // Reload the tracker to reflect imported progress
+    if (window.tracker) {
+        window.tracker.loadFromLocalStorage();
+        window.tracker.renderProblems();
+        window.tracker.updateLadderGrid();
+        window.tracker.updateStats();
+    }
+    
+    // Show success toast
+    showToast('Progress imported successfully!', 'success', 5000);
+}
+
+function showImportConfirmation(localStorageData) {
+    const overlay = document.getElementById('importConfirmOverlay');
+    const confirmButton = document.getElementById('confirmImportButton');
+    const cancelButton = document.getElementById('cancelImportButton');
+    
+    // Show overlay
+    overlay.classList.add('active');
+    
+    // Handle confirm button
+    const handleConfirm = () => {
+        importProgress(localStorageData);
+        overlay.classList.remove('active');
+        cleanup();
+    };
+    
+    // Handle cancel button
+    const handleCancel = () => {
+        // Remove share code from URL without importing
+        window.history.replaceState({}, document.title, window.location.pathname);
+        overlay.classList.remove('active');
+        cleanup();
+    };
+    
+    // Cleanup function to remove event listeners
+    const cleanup = () => {
+        confirmButton.removeEventListener('click', handleConfirm);
+        cancelButton.removeEventListener('click', handleCancel);
+        overlay.removeEventListener('click', handleOverlayClick);
+        document.removeEventListener('keydown', handleEscape);
+    };
+    
+    // Close overlay when clicking outside
+    const handleOverlayClick = (e) => {
+        if (e.target === overlay) {
+            handleCancel();
+        }
+    };
+    
+    // Close overlay on Escape key
+    const handleEscape = (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            handleCancel();
+        }
+    };
+    
+    // Attach event listeners
+    confirmButton.addEventListener('click', handleConfirm);
+    cancelButton.addEventListener('click', handleCancel);
+    overlay.addEventListener('click', handleOverlayClick);
+    document.addEventListener('keydown', handleEscape);
 }
 
 function initializeShareFunctionality() {
@@ -716,15 +808,27 @@ function initializeShareFunctionality() {
     });
 }
 
-function showToast(message) {
+function showToast(message, type = 'default', duration = 3000) {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
     
+    // Set message
     toastMessage.textContent = message;
+    
+    // Set icon and style based on type
+    if (type === 'success') {
+        toastIcon.textContent = '✓';
+        toast.classList.add('success');
+    } else {
+        toastIcon.textContent = '';
+        toast.classList.remove('success');
+    }
+    
     toast.classList.add('show');
     
-    // Hide toast after 3 seconds
+    // Hide toast after specified duration
     setTimeout(() => {
         toast.classList.remove('show');
-    }, 3000);
+    }, duration);
 }

@@ -205,8 +205,22 @@
         </div>
     </div>
 
+    <!-- Import Confirmation Overlay -->
+    <div id="importConfirmOverlay" class="overlay">
+        <div class="overlay-content import-confirm-content">
+            <h2>Import Progress?</h2>
+            <p class="import-confirm-message">It seems you already have some Boulder Ladder progress recorded (well done!).</p>
+            <p class="import-confirm-question">Are you sure you want to import this new session information instead?</p>
+            <div class="import-confirm-actions">
+                <button id="cancelImportButton" class="overlay-button secondary-button">No, keep mine</button>
+                <button id="confirmImportButton" class="overlay-button primary-button">Yes, import</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast">
+        <span id="toastIcon"></span>
         <span id="toastMessage">Link copied to clipboard!</span>
     </div>
 
