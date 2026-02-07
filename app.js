@@ -10,15 +10,21 @@
 const SHARE_BASE_URL = 'example.com';
 
 // Encoding/Decoding functions for share codes
-function encodeProgressToShareCode(problems) {
+function encodeProgressToShareCode(problems, month) {
+    // Encode month (YYYY-MM format) as 5-char hex preamble
+    // Example: "2026-02" -> "202602" (6 digits) -> decimal -> hex (max 5 chars)
+    const monthDigits = month.replace('-', ''); // "2026-02" -> "202602"
+    const monthDecimal = parseInt(monthDigits, 10);
+    const monthHex = monthDecimal.toString(16).padStart(5, '0');
+    
     // Map status to single digit (0-4)
     const statusToDigit = {
         null: '0',
-        'not-completed': '0',
-        '1st-attempt': '1',
-        '2nd-attempt': '2',
-        '3rd-attempt': '3',
-        '4th-plus': '4'
+        [COMPLETION_STATUS.NOT_COMPLETED]: '0',
+        [COMPLETION_STATUS.FIRST_ATTEMPT]: '1',
+        [COMPLETION_STATUS.SECOND_ATTEMPT]: '2',
+        [COMPLETION_STATUS.THIRD_ATTEMPT]: '3',
+        [COMPLETION_STATUS.FOURTH_PLUS]: '4'
     };
     
     // Convert all 21 problems to digits
@@ -41,23 +47,36 @@ function encodeProgressToShareCode(problems) {
         return hex.padStart(i < 4 ? 3 : 1, '0');
     });
     
-    return encoded.join('');
+    // Combine month preamble + problem data
+    // Format: MMMMM + PPPPPPPPPPPPP (5 + 13 = 18 chars)
+    return monthHex + encoded.join('');
 }
 
 function decodeShareCodeToProgress(shareCode) {
-    // Validate share code length
-    if (shareCode.length !== 13) {
-        console.error('Invalid share code length:', shareCode.length, 'expected 13');
+    // Validate share code length (5 for month + 13 for problems = 18)
+    if (shareCode.length !== 18) {
+        console.error('Invalid share code length:', shareCode.length, 'expected 18');
         return null;
     }
     
+    // Extract month preamble (first 5 chars)
+    const monthHex = shareCode.slice(0, 5);
+    const monthDecimal = parseInt(monthHex, 16);
+    const monthDigits = monthDecimal.toString().padStart(6, '0');
+    const year = monthDigits.slice(0, 4);
+    const month = monthDigits.slice(4, 6);
+    const decodedMonth = `${year}-${month}`;
+    
+    // Extract problem data (remaining 13 chars)
+    const problemData = shareCode.slice(5);
+    
     // Break into chunks: 3-3-3-3-1
     const chunks = [
-        shareCode.slice(0, 3),
-        shareCode.slice(3, 6),
-        shareCode.slice(6, 9),
-        shareCode.slice(9, 12),
-        shareCode.slice(12, 13)
+        problemData.slice(0, 3),
+        problemData.slice(3, 6),
+        problemData.slice(6, 9),
+        problemData.slice(9, 12),
+        problemData.slice(12, 13)
     ];
     
     // Decode each chunk (hex → decimal → base-5)
@@ -71,26 +90,43 @@ function decodeShareCodeToProgress(shareCode) {
     // Map digits back to status
     const digitToStatus = {
         '0': null,
-        '1': '1st-attempt',
-        '2': '2nd-attempt',
-        '3': '3rd-attempt',
-        '4': '4th-plus'
+        '1': COMPLETION_STATUS.FIRST_ATTEMPT,
+        '2': COMPLETION_STATUS.SECOND_ATTEMPT,
+        '3': COMPLETION_STATUS.THIRD_ATTEMPT,
+        '4': COMPLETION_STATUS.FOURTH_PLUS
     };
     
     // Convert to array of statuses
     const statuses = decoded.split('').map(d => digitToStatus[d]);
     
+    // Get problems for this month
+    const monthProblems = PROBLEMS_BY_MONTH[decodedMonth];
+    
+    if (!monthProblems) {
+        console.error('No problem data found for month:', decodedMonth);
+        return null;
+    }
+    
+    // Build localStorage-compatible JSON format
+    const progressMap = {};
+    monthProblems.forEach((problem, index) => {
+        const status = statuses[index];
+        if (status && status !== COMPLETION_STATUS.NOT_COMPLETED) {
+            progressMap[problem.ouyId] = status;
+        }
+    });
+    
+    // Build the full localStorage structure
+    const localStorageData = {
+        [decodedMonth]: progressMap
+    };
+    
     return {
         shareCode: shareCode,
+        month: decodedMonth,
         decodedDigits: decoded,
         statuses: statuses,
-        summary: {
-            notCompleted: statuses.filter(s => s === null).length,
-            firstAttempt: statuses.filter(s => s === '1st-attempt').length,
-            secondAttempt: statuses.filter(s => s === '2nd-attempt').length,
-            thirdAttempt: statuses.filter(s => s === '3rd-attempt').length,
-            fourthPlus: statuses.filter(s => s === '4th-plus').length
-        }
+        localStorageData: localStorageData
     };
 }
 
@@ -158,7 +194,7 @@ const POINTS = {
 
 class BoulderingTracker {
     constructor(currentMonth) {
-        this.currentMonth = currentMonth;
+        this.month = currentMonth;
         this.problems = [];
         this.init();
     }
@@ -176,12 +212,12 @@ class BoulderingTracker {
         const savedProgress = localStorage.getItem('bouldering-progress');
         
         // Get problems for current month
-        const problemsData = PROBLEMS_BY_MONTH[this.currentMonth] || [];
+        const problemsData = PROBLEMS_BY_MONTH[this.month] || [];
         
         if (savedProgress) {
             const allProgressData = JSON.parse(savedProgress);
             // Get progress for current month
-            const progressMap = allProgressData[this.currentMonth] || {};
+            const progressMap = allProgressData[this.month] || {};
             
             // Merge saved progress with problem data (using ouyId as key)
             this.problems = problemsData.map(problem => {
@@ -228,7 +264,7 @@ class BoulderingTracker {
         });
         
         // Store with month key
-        allProgressData[this.currentMonth] = monthProgressMap;
+        allProgressData[this.month] = monthProgressMap;
         
         localStorage.setItem('bouldering-progress', JSON.stringify(allProgressData));
     }
@@ -322,7 +358,7 @@ class BoulderingTracker {
             const isBonus = problem.id === 21;
             const points = isBonus ? 0 : (problem.status ? POINTS[problem.status] : 0);
             const pointsDisplay = isBonus ? '🎟️ Bonus' : `${points} pts`;
-            const statusClass = problem.status || 'not-completed';
+            const statusClass = problem.status || COMPLETION_STATUS.NOT_COMPLETED;
             
             return `
                 <div class="problem-card ${statusClass} ${isBonus ? 'bonus-problem' : ''}" data-ouy-id="${problem.ouyId}">
@@ -578,14 +614,14 @@ function initializeOverlay() {
 // ============================================
 
 function checkForShareCode() {
-    // Check URL hash for share code (e.g., example.com/#61a61a61a61a2)
+    // Check URL hash for share code (e.g., example.com/#3189361a61a61a61a2)
     const hash = window.location.hash.slice(1); // Remove the # symbol
     
-    // Also check path for share code (e.g., example.com/61a61a61a61a2)
+    // Also check path for share code (e.g., example.com/3189361a61a61a61a2)
     const pathParts = window.location.pathname.split('/').filter(p => p.length > 0);
     const shareCode = hash || (pathParts.length > 0 ? pathParts[pathParts.length - 1] : null);
     
-    if (shareCode && shareCode.length === 13) {
+    if (shareCode && shareCode.length === 18) {
         console.log('='.repeat(60));
         console.log('SHARE CODE DETECTED IN URL');
         console.log('='.repeat(60));
@@ -597,21 +633,18 @@ function checkForShareCode() {
         if (decoded) {
             console.log('Decoded successfully!');
             console.log('');
+            console.log('Month:', decoded.month);
             console.log('Raw digits (base-5):', decoded.decodedDigits);
             console.log('');
             console.log('Problem statuses:');
             decoded.statuses.forEach((status, i) => {
                 const problemNum = i + 1;
-                const displayStatus = status || 'not-completed';
+                const displayStatus = status || COMPLETION_STATUS.NOT_COMPLETED;
                 console.log(`  Problem ${problemNum}: ${displayStatus}`);
             });
             console.log('');
-            console.log('Summary:');
-            console.log(`  Not completed: ${decoded.summary.notCompleted}`);
-            console.log(`  1st attempt: ${decoded.summary.firstAttempt}`);
-            console.log(`  2nd attempt: ${decoded.summary.secondAttempt}`);
-            console.log(`  3rd attempt: ${decoded.summary.thirdAttempt}`);
-            console.log(`  4th+ attempt: ${decoded.summary.fourthPlus}`);
+            console.log('localStorage-compatible JSON:');
+            console.log(JSON.stringify(decoded.localStorageData, null, 2));
             console.log('');
             console.log('Note: This does NOT overwrite your local progress.');
             console.log('='.repeat(60));
@@ -631,9 +664,9 @@ function initializeShareFunctionality() {
     
     // Open share overlay and generate share code
     shareButton.addEventListener('click', () => {
-        // Generate share code from current progress
-        const shareCode = encodeProgressToShareCode(window.tracker.problems);
-        const shareUrl = `${SHARE_BASE_URL}/${shareCode}`;
+        // Generate share code from current progress (pass month)
+        const shareCode = encodeProgressToShareCode(window.tracker.problems, window.tracker.month);
+        const shareUrl = `${SHARE_BASE_URL}/#${shareCode}`;
         shareLinkInput.value = shareUrl;
         
         // Debug log
