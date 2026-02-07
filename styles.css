@@ -267,6 +267,7 @@ header h1 {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.2s;
+    position: relative;
 }
 
 .stat-card:hover {
@@ -288,6 +289,113 @@ header h1 {
 .stat-label {
     font-size: 0.9rem;
     opacity: 0.8;
+}
+
+.max-points {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* Share Icon */
+.share-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.3em;
+    cursor: pointer;
+    padding: 5px;
+    transition: all 0.3s;
+    opacity: 0.7;
+    line-height: 1;
+}
+
+.share-icon:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Share Overlay */
+.share-overlay-content {
+    max-width: 500px;
+}
+
+.share-link-container {
+    margin: 30px 0;
+}
+
+.share-link-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: monospace;
+    background: #f8f9fa;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.share-link-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+}
+
+.share-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.share-action-btn {
+    padding: 12px 20px;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: white;
+    color: #667eea;
+}
+
+.share-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.share-action-btn.open-btn:hover {
+    background: #667eea;
+    color: white;
+}
+
+.share-action-btn.copy-btn:hover {
+    background: #764ba2;
+    color: white;
+    border-color: #764ba2;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+    z-index: 2000;
+    transition: bottom 0.3s ease-in-out;
+}
+
+.toast.show {
+    bottom: 30px;
 }
 
 .max-points {

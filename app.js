@@ -4,6 +4,96 @@
 // Problems are organized by month in YYYY-MM format
 // Later: Move this to a separate problems.json file
 
+// ============================================
+// SHARE CONFIGURATION
+// ============================================
+const SHARE_BASE_URL = 'example.com';
+
+// Encoding/Decoding functions for share codes
+function encodeProgressToShareCode(problems) {
+    // Map status to single digit (0-4)
+    const statusToDigit = {
+        null: '0',
+        'not-completed': '0',
+        '1st-attempt': '1',
+        '2nd-attempt': '2',
+        '3rd-attempt': '3',
+        '4th-plus': '4'
+    };
+    
+    // Convert all 21 problems to digits
+    const digits = problems.map(p => statusToDigit[p.status] || '0').join('');
+    
+    // Break into chunks: 5-5-5-5-1
+    const chunks = [
+        digits.slice(0, 5),
+        digits.slice(5, 10),
+        digits.slice(10, 15),
+        digits.slice(15, 20),
+        digits.slice(20, 21)
+    ];
+    
+    // Encode each chunk to hex (base-5 → decimal → hex)
+    const encoded = chunks.map((chunk, i) => {
+        const decimal = parseInt(chunk, 5);
+        const hex = decimal.toString(16);
+        // Pad first 4 chunks to 3 chars, last chunk to 1 char
+        return hex.padStart(i < 4 ? 3 : 1, '0');
+    });
+    
+    return encoded.join('');
+}
+
+function decodeShareCodeToProgress(shareCode) {
+    // Validate share code length
+    if (shareCode.length !== 13) {
+        console.error('Invalid share code length:', shareCode.length, 'expected 13');
+        return null;
+    }
+    
+    // Break into chunks: 3-3-3-3-1
+    const chunks = [
+        shareCode.slice(0, 3),
+        shareCode.slice(3, 6),
+        shareCode.slice(6, 9),
+        shareCode.slice(9, 12),
+        shareCode.slice(12, 13)
+    ];
+    
+    // Decode each chunk (hex → decimal → base-5)
+    const decoded = chunks.map((hex, i) => {
+        const decimal = parseInt(hex, 16);
+        const base5 = decimal.toString(5);
+        // Pad first 4 chunks to 5 digits, last chunk to 1 digit
+        return base5.padStart(i < 4 ? 5 : 1, '0');
+    }).join('');
+    
+    // Map digits back to status
+    const digitToStatus = {
+        '0': null,
+        '1': '1st-attempt',
+        '2': '2nd-attempt',
+        '3': '3rd-attempt',
+        '4': '4th-plus'
+    };
+    
+    // Convert to array of statuses
+    const statuses = decoded.split('').map(d => digitToStatus[d]);
+    
+    return {
+        shareCode: shareCode,
+        decodedDigits: decoded,
+        statuses: statuses,
+        summary: {
+            notCompleted: statuses.filter(s => s === null).length,
+            firstAttempt: statuses.filter(s => s === '1st-attempt').length,
+            secondAttempt: statuses.filter(s => s === '2nd-attempt').length,
+            thirdAttempt: statuses.filter(s => s === '3rd-attempt').length,
+            fourthPlus: statuses.filter(s => s === '4th-plus').length
+        }
+    };
+}
+
 const PROBLEMS_BY_MONTH = {
     '2026-02': [
         { id: 1, ouyId: "e025878c-8e90-4e82-9e6d-afa72f458ee6", name: "Ladder 1", color: "#2458ac", area: "Panels" },
@@ -388,8 +478,12 @@ class BoulderingTracker {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if there's a share code in the URL
+    checkForShareCode();
+    
     window.tracker = new BoulderingTracker(CURRENT_MONTH);
     initializeOverlay();
+    initializeShareFunctionality();
     
     // Update subtitle with current month
     const subtitleElement = document.getElementById('subtitle');
@@ -477,4 +571,127 @@ function initializeOverlay() {
             expandDetailsBtn.textContent = 'click here for details';
         }
     });
+}
+
+// ============================================
+// SHARE FUNCTIONALITY
+// ============================================
+
+function checkForShareCode() {
+    // Check URL hash for share code (e.g., example.com/#61a61a61a61a2)
+    const hash = window.location.hash.slice(1); // Remove the # symbol
+    
+    // Also check path for share code (e.g., example.com/61a61a61a61a2)
+    const pathParts = window.location.pathname.split('/').filter(p => p.length > 0);
+    const shareCode = hash || (pathParts.length > 0 ? pathParts[pathParts.length - 1] : null);
+    
+    if (shareCode && shareCode.length === 13) {
+        console.log('='.repeat(60));
+        console.log('SHARE CODE DETECTED IN URL');
+        console.log('='.repeat(60));
+        console.log('Share code:', shareCode);
+        console.log('');
+        
+        const decoded = decodeShareCodeToProgress(shareCode);
+        
+        if (decoded) {
+            console.log('Decoded successfully!');
+            console.log('');
+            console.log('Raw digits (base-5):', decoded.decodedDigits);
+            console.log('');
+            console.log('Problem statuses:');
+            decoded.statuses.forEach((status, i) => {
+                const problemNum = i + 1;
+                const displayStatus = status || 'not-completed';
+                console.log(`  Problem ${problemNum}: ${displayStatus}`);
+            });
+            console.log('');
+            console.log('Summary:');
+            console.log(`  Not completed: ${decoded.summary.notCompleted}`);
+            console.log(`  1st attempt: ${decoded.summary.firstAttempt}`);
+            console.log(`  2nd attempt: ${decoded.summary.secondAttempt}`);
+            console.log(`  3rd attempt: ${decoded.summary.thirdAttempt}`);
+            console.log(`  4th+ attempt: ${decoded.summary.fourthPlus}`);
+            console.log('');
+            console.log('Note: This does NOT overwrite your local progress.');
+            console.log('='.repeat(60));
+        } else {
+            console.error('Failed to decode share code');
+        }
+    }
+}
+
+function initializeShareFunctionality() {
+    const shareButton = document.getElementById('shareButton');
+    const shareOverlay = document.getElementById('shareOverlay');
+    const closeShareOverlay = document.getElementById('closeShareOverlay');
+    const shareLinkInput = document.getElementById('shareLink');
+    const openLinkButton = document.getElementById('openLinkButton');
+    const copyLinkButton = document.getElementById('copyLinkButton');
+    
+    // Open share overlay and generate share code
+    shareButton.addEventListener('click', () => {
+        // Generate share code from current progress
+        const shareCode = encodeProgressToShareCode(window.tracker.problems);
+        const shareUrl = `${SHARE_BASE_URL}/${shareCode}`;
+        shareLinkInput.value = shareUrl;
+        
+        // Debug log
+        console.log('Generated share code:', shareCode);
+        console.log('Share URL:', shareUrl);
+        
+        shareOverlay.classList.add('active');
+    });
+    
+    // Close share overlay
+    closeShareOverlay.addEventListener('click', () => {
+        shareOverlay.classList.remove('active');
+    });
+    
+    // Close overlay when clicking outside
+    shareOverlay.addEventListener('click', (e) => {
+        if (e.target === shareOverlay) {
+            shareOverlay.classList.remove('active');
+        }
+    });
+    
+    // Close overlay on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && shareOverlay.classList.contains('active')) {
+            shareOverlay.classList.remove('active');
+        }
+    });
+    
+    // Open link in new tab
+    openLinkButton.addEventListener('click', () => {
+        const url = shareLinkInput.value;
+        window.open(`https://${url}`, '_blank', 'noopener,noreferrer');
+    });
+    
+    // Copy link to clipboard
+    copyLinkButton.addEventListener('click', async () => {
+        const url = shareLinkInput.value;
+        try {
+            await navigator.clipboard.writeText(url);
+            showToast('Link copied to clipboard!');
+        } catch (err) {
+            // Fallback for browsers that don't support clipboard API
+            shareLinkInput.select();
+            document.execCommand('copy');
+            showToast('Link copied to clipboard!');
+        }
+    });
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastMessage.textContent = message;
+    toast.classList.add('show');
+    
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
 }

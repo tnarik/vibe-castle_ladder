@@ -20,6 +20,7 @@
             <!-- Statistics Section -->
             <section class="stats-section">
                 <div class="stat-card">
+                    <button id="shareButton" class="share-icon" title="Share your progress">🔗</button>
                     <div class="stat-value" id="progressPercentage">0/21</div>
                     <div class="stat-label">Progress</div>
                 </div>
@@ -182,6 +183,31 @@
             
             <button class="overlay-button" id="closeOverlayButton">Got it!</button>
         </div>
+    </div>
+
+    <!-- Share Overlay -->
+    <div id="shareOverlay" class="overlay">
+        <div class="overlay-content share-overlay-content">
+            <button class="overlay-close" id="closeShareOverlay">&times;</button>
+            <h2>Share or Save as a Link</h2>
+            
+            <div class="share-link-container">
+                <input type="text" id="shareLink" class="share-link-input" readonly>
+                <div class="share-actions">
+                    <button id="openLinkButton" class="share-action-btn open-btn" title="Open in new tab">
+                        🔗 Open
+                    </button>
+                    <button id="copyLinkButton" class="share-action-btn copy-btn" title="Copy to clipboard">
+                        📋 Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toastMessage">Link copied to clipboard!</span>
     </div>
 
     <script src="app.js"></script>
