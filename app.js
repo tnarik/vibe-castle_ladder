@@ -516,25 +516,67 @@ class BoulderingTracker {
 // INITIALIZE APP
 // ============================================
 
+// ============================================
+// MONTH NAVIGATION
+// ============================================
+
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
+                     'July', 'August', 'September', 'October', 'November', 'December'];
+
+function getAvailableMonths() {
+    return Object.keys(PROBLEMS_BY_MONTH).sort();
+}
+
+function updateSubtitle(displayMonth) {
+    const subtitleElement = document.getElementById('subtitle');
+    if (!subtitleElement) return;
+    const [, month] = displayMonth.split('-');
+    const label = MONTH_NAMES[parseInt(month, 10) - 1];
+    const isCurrentMonth = displayMonth === CURRENT_MONTH;
+    const hasData = !!PROBLEMS_BY_MONTH[displayMonth];
+    let html = `Track your progress for <strong>${label}</strong>`;
+    if (isCurrentMonth && !hasData) {
+        html += ` <span class="getting-ready">(getting ready)</span>`;
+    }
+    subtitleElement.innerHTML = html;
+}
+
+function updateMonthNavButtons(displayMonth) {
+    const available = getAvailableMonths();
+    const hasPrev = available.some(m => m < displayMonth);
+    // Allow forward navigation to any later month with data, OR to CURRENT_MONTH itself even without data
+    const hasNext = displayMonth < CURRENT_MONTH;
+    document.getElementById('prevMonthBtn').disabled = !hasPrev;
+    document.getElementById('nextMonthBtn').disabled = !hasNext;
+}
+
+function switchToMonth(newMonth) {
+    window.tracker = new BoulderingTracker(newMonth);
+    updateSubtitle(newMonth);
+    updateMonthNavButtons(newMonth);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if there's a share code in the URL
     checkForShareCode();
-    
     window.tracker = new BoulderingTracker(CURRENT_MONTH);
     initializeOverlay();
     initializeShareFunctionality();
-    
-    // Update subtitle with current month
-    const subtitleElement = document.getElementById('subtitle');
-    if (subtitleElement) {
-        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                           'July', 'August', 'September', 'October', 'November', 'December'];
-        // Parse CURRENT_MONTH (format: 'YYYY-MM')
-        const [year, month] = CURRENT_MONTH.split('-');
-        const monthIndex = parseInt(month, 10) - 1; // Convert to 0-based index
-        const currentMonthName = monthNames[monthIndex];
-        subtitleElement.innerHTML = `Track your progress for <strong>${currentMonthName}</strong>`;
-    }
+
+    updateSubtitle(CURRENT_MONTH);
+    updateMonthNavButtons(CURRENT_MONTH);
+
+    document.getElementById('prevMonthBtn').addEventListener('click', () => {
+        const available = getAvailableMonths();
+        const prev = available.filter(m => m < window.tracker.month).pop();
+        if (prev) switchToMonth(prev);
+    });
+
+    document.getElementById('nextMonthBtn').addEventListener('click', () => {
+        const available = getAvailableMonths();
+        // Prefer the nearest future month that has data; otherwise go to CURRENT_MONTH
+        const next = available.find(m => m > window.tracker.month && m <= CURRENT_MONTH) || CURRENT_MONTH;
+        if (next > window.tracker.month) switchToMonth(next);
+    });
 });
 
 // ============================================

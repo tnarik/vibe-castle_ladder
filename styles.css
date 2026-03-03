@@ -930,3 +930,47 @@ header h1 {
         gap: 10px;
     }
 }
+
+/* ============================================
+   MONTH NAVIGATION
+   ============================================ */
+
+.subtitle-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.month-nav-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #667eea;
+    padding: 0 6px;
+    transition: color 0.15s, transform 0.15s, opacity 0.15s;
+    user-select: none;
+    font-weight: bold;
+}
+
+.month-nav-btn:not(:disabled):hover {
+    color: #764ba2;
+    transform: scale(1.25);
+}
+
+.month-nav-btn:not(:disabled):active {
+    transform: scale(1.05);
+}
+
+.month-nav-btn:disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.getting-ready {
+    font-size: 0.8em;
+    opacity: 0.65;
+    font-style: italic;
+}
