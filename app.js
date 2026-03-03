@@ -156,11 +156,30 @@ const PROBLEMS_BY_MONTH = {
         { id: 19, ouyId: "bf183cc4-ee73-47a2-ae9d-35c58ff339ec", name: "Ladder 19", color: "#020707", area: "Loft Bloc" },
         { id: 20, ouyId: "cbc029e7-122a-458c-a5d0-82dedaa7d597", name: "Ladder 20", color: "#d78ac5", area: "Loft" },
         { id: 21, ouyId: "894782a1-368e-4697-a929-835a278aa69e", name: "Ladder Bonus", color: "#FF6B6B", area: "Loft" },
+    ],
+    '2026-03': [
+        { id: 1, ouyId: "c7862f91-18c6-449f-b2b8-4220fd2e8340", name: "Ladder 1", color: "#d71515", area: "Slabs" },
+        { id: 2, ouyId: "69f6419a-4e6b-4e5d-8099-dd2898ce994c", name: "Ladder 2", color: "#ffb20b", area: "Mezz" },
+        { id: 3, ouyId: "cd2bf211-b8b0-41bb-82e2-56358b292d7e", name: "Ladder 3", color: "#fafafa", area: "Slabs" },
+        { id: 4, ouyId: "0e1af76b-a5ee-4db8-97da-a48ca4aa6369", name: "Ladder 4", color: "#fbff09", area: "Slabs" },
+        { id: 5, ouyId: "92ecb8ed-e9e7-403f-b9e0-a1b360784aa8", name: "Ladder 5", color: "#31c61d", area: "Mezz" },
+        { id: 6, ouyId: "553c901f-bbd2-483a-a0a1-e26675a6fbe0", name: "Ladder 6", color: "#fbff09", area: "Comp Wall" },
+        { id: 7, ouyId: "77d0805d-4f17-4d8f-b8c3-cb20cefbc4ae", name: "Ladder 7", color: "#2458ac", area: "Slabs" },
+        { id: 8, ouyId: "72336aab-045f-4853-82f8-ce2206629acf", name: "Ladder 8", color: "#fbff09", area: "Pump Room" },
+        { id: 9, ouyId: "34f4f5ee-122c-4991-b427-86d01ae1dcbf", name: "Ladder 9", color: "#fbff09", area: "Upper Traverse" },
+        { id: 10, ouyId: "ee640759-9247-42e3-8d37-1e0d416bc6c5", name: "Ladder 10", color: "#fafafa", area: "Slabs" },
+        { id: 11, ouyId: "0dea1831-6c68-4fe8-af5a-bd7baeb70541", name: "Ladder 11", color: "#020707", area: "Slabs" },
+        { id: 12, ouyId: "6e5046d6-2701-41aa-9d45-569adfa28c48", name: "Ladder 12", color: "#d71515", area: "Comp Wall" },
+        { id: 13, ouyId: "2327405c-79b6-4b55-a826-ed4ee95140b1", name: "Ladder 13", color: "#2458ac", area: "Mezz" },
+        { id: 14, ouyId: "0eeda24e-411f-4153-a03d-5ac826a6f6e4", name: "Ladder 14", color: "#d78ac5", area: "Comp Wall" },
+        { id: 15, ouyId: "516cc625-ae68-4f00-a442-ee1f258c849e", name: "Ladder 15", color: "#ffb20b", area: "Mezz" },
+        { id: 16, ouyId: "0348fb8b-2e0b-4bea-b901-06d647af7e54", name: "Ladder 16", color: "#ffb20b", area: "Comp Wall" },
+        { id: 17, ouyId: "d2d18d2e-8f4a-4706-99fe-649dceb9e924", name: "Ladder 17", color: "#d71515", area: "Mezz" },
+        { id: 18, ouyId: "bf0a2f4e-1602-4633-a9ee-b3d8834d5be7", name: "Ladder 18", color: "#d71515", area: "Slabs" },
+        { id: 19, ouyId: "bdb6613b-d2be-449a-a78f-45612c470876", name: "Ladder 19", color: "#31c61d", area: "Mezz" },
+        { id: 20, ouyId: "6fa56763-d1f6-4873-b2c4-b62e9d86f9f5", name: "Ladder 20", color: "#31c61d", area: "Comp Wall" },
+        { id: 21, ouyId: "4c033d90-d445-46e9-98a0-a002c23c10f0", name: "Ladder Bonus", color: "#ffb20b", area: "Comp Wall" },
     ]
-    // Future months can be added here:
-    // '2026-03': [ ... ],
-    // '2026-04': [ ... ],
-    // etc.
 };
 
 // Current month to display (automatically determined from current date)
