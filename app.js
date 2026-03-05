@@ -279,11 +279,19 @@ class BoulderingTracker {
 
     init() {
         this.loadFromLocalStorage();
-        this.populateAreaFilter();
+        this.attachEventListeners();
         this.renderProblems();
         this.updateLadderGrid();
         this.updateStats();
-        this.attachEventListeners();
+        this.populateAreaFilter();
+    }
+
+    dispose() {
+        document.getElementById('areaFilter').removeEventListener('change', this._onAreaChange);
+        document.getElementById('statusFilter').removeEventListener('change', this._onStatusChange);
+        document.querySelectorAll('.ladder-box').forEach(box => {
+            box.removeEventListener('click', this._onLadderClick);
+        });
     }
 
     loadFromLocalStorage() {
@@ -539,20 +547,14 @@ class BoulderingTracker {
     }
 
     attachEventListeners() {
-        document.getElementById('areaFilter').addEventListener('change', () => {
-            this.renderProblems();
-        });
+        this._onAreaChange = () => this.renderProblems();
+        this._onStatusChange = () => this.renderProblems();
+        this._onLadderClick = (e) => this.scrollToProblem(parseInt(e.currentTarget.dataset.ladder));
 
-        document.getElementById('statusFilter').addEventListener('change', () => {
-            this.renderProblems();
-        });
-        
-        // Add click listeners to ladder boxes
+        document.getElementById('areaFilter').addEventListener('change', this._onAreaChange);
+        document.getElementById('statusFilter').addEventListener('change', this._onStatusChange);
         document.querySelectorAll('.ladder-box').forEach(box => {
-            box.addEventListener('click', (e) => {
-                const ladderId = parseInt(e.currentTarget.dataset.ladder);
-                this.scrollToProblem(ladderId);
-            });
+            box.addEventListener('click', this._onLadderClick);
         });
     }
     
@@ -636,6 +638,7 @@ function updateMonthNavButtons(displayMonth) {
 }
 
 function switchToMonth(newMonth) {
+    window.tracker.dispose(); // clean up before replacing
     window.tracker = new BoulderingTracker(newMonth);
     updateSubtitle(newMonth);
     updateMonthNavButtons(newMonth);
