@@ -468,7 +468,7 @@ class BoulderingTracker {
         while (areaFilter.options.length > 1) {
             areaFilter.remove(1);
         }
-        areaFilter.selectedIndex = 0; // explicitly reset to "All Areas"
+        areaFilter.value = 'all'; // explicitly reset to "All Areas"
 
         areas.forEach(area => {
             const option = document.createElement('option');
