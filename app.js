@@ -56,7 +56,26 @@ function encodeMonthProgressToShareCode(problems, month) {
 }
 
 function encodeProgressToShareCode() {
-    return 'test';
+    const stored = localStorage.getItem('bouldering-progress');
+    if (!stored) return '';
+
+    const allProgress = JSON.parse(stored);
+
+    // Only encode months that exist in PROBLEMS_BY_MONTH, in chronological order
+    const knownMonths = Object.keys(PROBLEMS_BY_MONTH).sort();
+
+    return knownMonths
+        .filter(month => allProgress[month] && Object.keys(allProgress[month]).length > 0)
+        .map(month => {
+            // Reconstruct the problems array with statuses from localStorage
+            const progressMap = allProgress[month];
+            const problems = PROBLEMS_BY_MONTH[month].map(p => ({
+                ...p,
+                status: progressMap[p.ouyId] || null
+            }));
+            return encodeMonthProgressToShareCode(problems, month);
+        })
+        .join('');
 }
 
 function decodeMonthShareCodeToProgress(shareCode) {
@@ -264,7 +283,6 @@ class BoulderingTracker {
         this.renderProblems();
         this.updateLadderGrid();
         this.updateStats();
-        this.populateAreaFilter();
         this.attachEventListeners();
     }
 
@@ -624,13 +642,15 @@ function switchToMonth(newMonth) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    checkForShareCode();
     window.tracker = new BoulderingTracker(CURRENT_MONTH);
     initializeOverlay();
     initializeShareFunctionality();
 
     updateSubtitle(CURRENT_MONTH);
     updateMonthNavButtons(CURRENT_MONTH);
+
+    // Check for share code AFTER tracker is ready so importProgress can always re-render
+    checkForShareCode();
 
     document.getElementById('prevMonthBtn').addEventListener('click', () => {
         const available = getAvailableMonths();
@@ -771,28 +791,39 @@ function checkForShareCode() {
 }
 
 function importProgress(localStorageData) {
-    // Import the decoded progress into localStorage
     const existingProgress = localStorage.getItem('bouldering-progress');
     const allProgressData = existingProgress ? JSON.parse(existingProgress) : {};
-    
-    // Merge the imported data
-    Object.assign(allProgressData, localStorageData);
-    
-    // Save to localStorage
+
+    // Only merge months that have actual progress — never overwrite existing data with empty months
+    const importedMonths = [];
+    Object.entries(localStorageData).forEach(([month, progressMap]) => {
+        if (Object.keys(progressMap).length > 0) {
+            allProgressData[month] = progressMap;
+            importedMonths.push(month);
+        }
+    });
+
     localStorage.setItem('bouldering-progress', JSON.stringify(allProgressData));
-    
-    // Remove share code from URL
     window.history.replaceState({}, document.title, window.location.pathname);
-    
-    // Reload the tracker to reflect imported progress
-    if (window.tracker) {
-        window.tracker.loadFromLocalStorage();
-        window.tracker.renderProblems();
-        window.tracker.updateLadderGrid();
-        window.tracker.updateStats();
+
+    // Navigate to the most relevant month:
+    // prefer CURRENT_MONTH if it has imported data, otherwise the most recent imported month
+    const sortedImported = importedMonths.sort();
+    const targetMonth = sortedImported.includes(CURRENT_MONTH)
+        ? CURRENT_MONTH
+        : sortedImported[sortedImported.length - 1];
+
+    if (targetMonth && PROBLEMS_BY_MONTH[targetMonth] && window.tracker) {
+        if (targetMonth !== window.tracker.month) {
+            switchToMonth(targetMonth);
+        } else {
+            window.tracker.loadFromLocalStorage();
+            window.tracker.renderProblems();
+            window.tracker.updateLadderGrid();
+            window.tracker.updateStats();
+        }
     }
-    
-    // Show success toast
+
     showToast('Progress imported successfully!', 'success', 5000);
 }
 
