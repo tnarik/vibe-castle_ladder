@@ -223,10 +223,10 @@ class BoulderingTracker {
 
     init() {
         this.loadFromLocalStorage();
+        this.populateAreaFilter();
         this.renderProblems();
         this.updateLadderGrid();
         this.updateStats();
-        this.populateAreaFilter();
         this.attachEventListeners();
     }
 
@@ -468,6 +468,7 @@ class BoulderingTracker {
         while (areaFilter.options.length > 1) {
             areaFilter.remove(1);
         }
+        areaFilter.selectedIndex = 0; // explicitly reset to "All Areas"
 
         areas.forEach(area => {
             const option = document.createElement('option');
