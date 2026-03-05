@@ -464,6 +464,11 @@ class BoulderingTracker {
         const areas = [...new Set(this.problems.map(p => p.area))];
         const areaFilter = document.getElementById('areaFilter');
         
+        // Remove all options except the first ("All Areas") before repopulating
+        while (areaFilter.options.length > 1) {
+            areaFilter.remove(1);
+        }
+
         areas.forEach(area => {
             const option = document.createElement('option');
             option.value = area;
