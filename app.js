@@ -10,7 +10,7 @@
 const SHARE_BASE_URL = 'castle-ladder.short.gy';
 
 // Encoding/Decoding functions for share codes
-function encodeProgressToShareCode(problems, month) {
+function encodeMonthProgressToShareCode(problems, month) {
     // Encode month (YYYY-MM format) as 5-char hex preamble
     // Example: "2026-02" -> "202602" (6 digits) -> decimal -> hex (max 5 chars)
     const monthDigits = month.replace('-', ''); // "2026-02" -> "202602"
@@ -55,7 +55,11 @@ function encodeProgressToShareCode(problems, month) {
     return monthHex + encoded.join('');
 }
 
-function decodeShareCodeToProgress(shareCode) {
+function encodeProgressToShareCode() {
+    return 'test';
+}
+
+function decodeMonthShareCodeToProgress(shareCode) {
     // Validate share code length (5 for month + 13 for problems = 18)
     if (shareCode.length !== 18) {
         console.error('Invalid share code length:', shareCode.length, 'expected 18');
@@ -129,6 +133,39 @@ function decodeShareCodeToProgress(shareCode) {
         month: decodedMonth,
         decodedDigits: decoded,
         statuses: statuses,
+        localStorageData: localStorageData
+    };
+}
+
+function decodeShareCodeToProgress(shareCode) {
+    // Share codes are 18 chars per month; reject anything that doesn't align
+    if (!shareCode || shareCode.length === 0 || shareCode.length % 18 !== 0) {
+        console.error('Invalid share code length:', shareCode.length, '(expected a multiple of 18)');
+        return null;
+    }
+
+    // Decode each 18-char month chunk
+    const monthChunks = [];
+    for (let i = 0; i < shareCode.length; i += 18) {
+        const decoded = decodeMonthShareCodeToProgress(shareCode.slice(i, i + 18));
+        if (!decoded) return null;
+        monthChunks.push(decoded);
+    }
+
+    // Merge all months into a single localStorageData object
+    const localStorageData = {};
+    monthChunks.forEach(chunk => {
+        Object.assign(localStorageData, chunk.localStorageData);
+    });
+
+    // Return unified result; preserve single-month fields on first chunk for backward compatibility
+    const first = monthChunks[0];
+    return {
+        shareCode: shareCode,
+        month: first.month,
+        months: monthChunks.map(c => c.month),
+        decodedDigits: first.decodedDigits,
+        statuses: first.statuses,
         localStorageData: localStorageData
     };
 }
@@ -694,11 +731,12 @@ function checkForShareCode() {
     
     const shareCode = hash || null;
     
-    if (shareCode && shareCode.length === 18) {
+    if (shareCode && shareCode.length > 0 && shareCode.length % 18 === 0) {
         console.log('='.repeat(60));
         console.log('SHARE CODE DETECTED IN URL');
         console.log('='.repeat(60));
         console.log('Share code:', shareCode);
+        console.log('Months in code:', shareCode.length / 18);
         console.log('');
         
         const decoded = decodeShareCodeToProgress(shareCode);
@@ -706,15 +744,7 @@ function checkForShareCode() {
         if (decoded) {
             console.log('Decoded successfully!');
             console.log('');
-            console.log('Month:', decoded.month);
-            console.log('Raw digits (base-5):', decoded.decodedDigits);
-            console.log('');
-            console.log('Problem statuses:');
-            decoded.statuses.forEach((status, i) => {
-                const problemNum = i + 1;
-                const displayStatus = status || COMPLETION_STATUS.NOT_COMPLETED;
-                console.log(`  Problem ${problemNum}: ${displayStatus}`);
-            });
+            console.log('Months:', decoded.months.join(', '));
             console.log('');
             console.log('localStorage-compatible JSON:');
             console.log(JSON.stringify(decoded.localStorageData, null, 2));
@@ -820,16 +850,16 @@ function showImportConfirmation(localStorageData) {
 
 function initializeShareFunctionality() {
     const shareButton = document.getElementById('shareButton');
+    const shareAllButton = document.getElementById('shareAllButton');
     const shareOverlay = document.getElementById('shareOverlay');
     const closeShareOverlay = document.getElementById('closeShareOverlay');
     const shareLinkInput = document.getElementById('shareLink');
-    const openLinkButton = document.getElementById('openLinkButton');
     const copyLinkButton = document.getElementById('copyLinkButton');
     
     // Open share overlay and generate share code
     shareButton.addEventListener('click', () => {
         // Generate share code from current progress (pass month)
-        const shareCode = encodeProgressToShareCode(window.tracker.problems, window.tracker.month);
+        const shareCode = encodeMonthProgressToShareCode(window.tracker.problems, window.tracker.month);
         const shareUrl = `${SHARE_BASE_URL}/#${shareCode}`;
         shareLinkInput.value = shareUrl;
         
@@ -838,6 +868,14 @@ function initializeShareFunctionality() {
         console.log('Share URL:', shareUrl);
         
         shareOverlay.classList.add('active');
+    });
+    
+    // Generate full progress share code (all months)
+    shareAllButton.addEventListener('click', () => {
+        const shareCode = encodeProgressToShareCode();
+        const shareUrl = `${SHARE_BASE_URL}/#${shareCode}`;
+        shareLinkInput.value = shareUrl;
+        console.log('Generated full progress share code:', shareCode);
     });
     
     // Close share overlay
@@ -857,12 +895,6 @@ function initializeShareFunctionality() {
         if (e.key === 'Escape' && shareOverlay.classList.contains('active')) {
             shareOverlay.classList.remove('active');
         }
-    });
-    
-    // Open link in new tab
-    openLinkButton.addEventListener('click', () => {
-        const url = shareLinkInput.value;
-        window.open(`https://${url}`, '_blank', 'noopener,noreferrer');
     });
     
     // Copy link to clipboard
