@@ -321,8 +321,41 @@ header h1 {
     max-width: 500px;
 }
 
+/* "Share all months" prompt — sits right below the title */
+.share-all-section {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+}
+
+.share-all-hint {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 8px;
+}
+
+.share-all-link {
+    background: none;
+    border: none;
+    color: #667eea;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+    font-family: inherit;
+}
+
+.share-all-link:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
 .share-link-container {
-    margin: 30px 0;
+    margin: 0 0 10px;
 }
 
 .share-link-input {

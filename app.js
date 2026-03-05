@@ -855,27 +855,51 @@ function initializeShareFunctionality() {
     const closeShareOverlay = document.getElementById('closeShareOverlay');
     const shareLinkInput = document.getElementById('shareLink');
     const copyLinkButton = document.getElementById('copyLinkButton');
-    
-    // Open share overlay and generate share code
-    shareButton.addEventListener('click', () => {
-        // Generate share code from current progress (pass month)
+    const shareOverlayTitle = shareOverlay.querySelector('h2');
+    const shareAllHint = shareOverlay.querySelector('.share-all-hint');
+
+    let currentMode = 'month'; // 'month' | 'all'
+
+    function getMonthLabel() {
+        if (!window.tracker || !window.tracker.month) return 'this month';
+        const [year, mon] = window.tracker.month.split('-');
+        return new Date(parseInt(year), parseInt(mon) - 1, 1)
+            .toLocaleString('default', { month: 'long', year: 'numeric' });
+    }
+
+    function setMonthMode() {
+        currentMode = 'month';
         const shareCode = encodeMonthProgressToShareCode(window.tracker.problems, window.tracker.month);
-        const shareUrl = `${SHARE_BASE_URL}/#${shareCode}`;
-        shareLinkInput.value = shareUrl;
-        
-        // Debug log
+        shareLinkInput.value = `${SHARE_BASE_URL}/#${shareCode}`;
+        shareOverlayTitle.textContent = 'Share or Save this month';
+        shareAllHint.textContent = 'Want to back up or share all months?';
+        shareAllButton.textContent = 'Generate full progress link \u2192';
         console.log('Generated share code:', shareCode);
-        console.log('Share URL:', shareUrl);
-        
+    }
+
+    function setAllMonthsMode() {
+        currentMode = 'all';
+        const shareCode = encodeProgressToShareCode();
+        shareLinkInput.value = `${SHARE_BASE_URL}/#${shareCode}`;
+        shareOverlayTitle.textContent = 'Share or Save all months';
+        shareAllHint.textContent = `Just want ${getMonthLabel()}?`;
+        shareAllButton.textContent = `Generate ${getMonthLabel()} link \u2192`;
+        console.log('Generated full progress share code:', shareCode);
+    }
+
+    // Open share overlay — always starts in month mode
+    shareButton.addEventListener('click', () => {
+        setMonthMode();
         shareOverlay.classList.add('active');
     });
-    
-    // Generate full progress share code (all months)
+
+    // Toggle between month / all-months
     shareAllButton.addEventListener('click', () => {
-        const shareCode = encodeProgressToShareCode();
-        const shareUrl = `${SHARE_BASE_URL}/#${shareCode}`;
-        shareLinkInput.value = shareUrl;
-        console.log('Generated full progress share code:', shareCode);
+        if (currentMode === 'month') {
+            setAllMonthsMode();
+        } else {
+            setMonthMode();
+        }
     });
     
     // Close share overlay
