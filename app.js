@@ -227,6 +227,7 @@ class BoulderingTracker {
         this.renderProblems();
         this.updateLadderGrid();
         this.updateStats();
+        this.populateAreaFilter();
         this.attachEventListeners();
     }
 
@@ -478,6 +479,8 @@ class BoulderingTracker {
         });
         
         areaFilter.selectedIndex = 0; // explicitly reset to "All Areas"
+        const event = new Event('change', { bubbles: true });
+        areaFilter.dispatchEvent(event); // dispatch change event
     }
 
     attachEventListeners() {
