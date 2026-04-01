@@ -1061,23 +1061,23 @@ header h1 {
     margin-top: 10px;
 }
 
+/* Mirrors .subtitle-nav: flex row, centered, with the back button
+   taking the place of the prev-month arrow */
 .progress-section-header {
     display: flex;
     align-items: center;
-    gap: 18px;
+    justify-content: center;
+    gap: 10px;
     margin-bottom: 24px;
     padding-bottom: 16px;
     border-bottom: 2px solid #f0f0f0;
-    position: relative;
 }
 
 .progress-section-header h2 {
     color: #333;
     margin: 0;
     font-size: 1.5em;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    text-align: center;
 }
 
 .back-btn {
