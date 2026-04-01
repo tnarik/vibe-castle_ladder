@@ -496,12 +496,16 @@ class BoulderingTracker {
     }
 
     updateLadderGrid() {
+        // Always clear all ladder boxes first — ensures empty state when no problems exist for the month
+        document.querySelectorAll('.ladder-box').forEach(box => {
+            box.classList.remove('completed-1st', 'completed-2nd', 'completed-3rd', 'completed-4th');
+        });
+
         // Update the visual ladder grid based on completion status
         this.problems.forEach(problem => {
             const ladderBox = document.querySelector(`.ladder-box[data-ladder="${problem.id}"]`);
             if (ladderBox) {
-                // Remove all completion classes
-                ladderBox.classList.remove('completed-1st', 'completed-2nd', 'completed-3rd', 'completed-4th');
+                // Add appropriate class based on status (null = no class added)
                 
                 // Add appropriate class based on status (null = no class added)
                 if (problem.status) {
