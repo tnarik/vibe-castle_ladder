@@ -648,10 +648,208 @@ function switchToMonth(newMonth) {
     updateMonthNavButtons(newMonth);
 }
 
+// ============================================
+// PROGRESS EVOLUTION VIEW
+// ============================================
+
+function getAllMonthsRange() {
+    const configuredMonths = Object.keys(PROBLEMS_BY_MONTH).sort();
+    if (configuredMonths.length === 0) return [CURRENT_MONTH];
+
+    const firstMonth = configuredMonths[0];
+    const months = [];
+    let [y, m] = firstMonth.split('-').map(Number);
+    const [cy, cm] = CURRENT_MONTH.split('-').map(Number);
+
+    while (y < cy || (y === cy && m <= cm)) {
+        months.push(`${y}-${String(m).padStart(2, '0')}`);
+        m++;
+        if (m > 12) { m = 1; y++; }
+    }
+    return months;
+}
+
+function computeMonthStats(month) {
+    const problemsData = PROBLEMS_BY_MONTH[month];
+    if (!problemsData) return { points: 0, bonusCompleted: false, hasData: false };
+
+    const savedProgress = localStorage.getItem('bouldering-progress');
+    if (!savedProgress) return { points: 0, bonusCompleted: false, hasData: true };
+
+    const allProgressData = JSON.parse(savedProgress);
+    const progressMap = allProgressData[month] || {};
+
+    let points = 0;
+    let bonusCompleted = false;
+
+    problemsData.forEach(problem => {
+        const status = progressMap[problem.ouyId];
+        if (!status) return;
+        if (problem.id === 21) {
+            bonusCompleted = true;
+        } else if (POINTS[status]) {
+            points += POINTS[status];
+        }
+    });
+
+    return { points, bonusCompleted, hasData: true };
+}
+
+function renderProgressChart() {
+    const container = document.getElementById('progressChart');
+    const months = getAllMonthsRange();
+    const data = months.map(m => ({ month: m, ...computeMonthStats(m) }));
+
+    const W = 600, H = 340;
+    const padL = 55, padR = 30, padT = 60, padB = 60;
+    const cW = W - padL - padR;
+    const cH = H - padT - padB;
+    const maxPts = 200;
+    const n = months.length;
+
+    const xOf = i => padL + (n <= 1 ? cW / 2 : (i / (n - 1)) * cW);
+    const yOf = v => padT + cH - (v / maxPts) * cH;
+
+    const pts = data.map((d, i) => ({ ...d, x: xOf(i), y: yOf(d.points) }));
+
+    let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+  <defs>
+    <linearGradient id="pgLineGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#667eea"/>
+      <stop offset="100%" stop-color="#764ba2"/>
+    </linearGradient>
+    <linearGradient id="pgDotGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#667eea"/>
+      <stop offset="100%" stop-color="#764ba2"/>
+    </linearGradient>
+    <filter id="pgGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>`;
+
+    // Y gridlines + labels
+    [0, 50, 100, 150, 200].forEach(v => {
+        const y = yOf(v);
+        svg += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#f0f0f0" stroke-width="1"/>`;
+        svg += `<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#aaa">${v}</text>`;
+    });
+
+    // Axes
+    svg += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + cH}" stroke="#e0e0e0" stroke-width="1.5"/>`;
+    svg += `<line x1="${padL}" y1="${padT + cH}" x2="${W - padR}" y2="${padT + cH}" stroke="#e0e0e0" stroke-width="1.5"/>`;
+
+    // X-axis labels
+    pts.forEach((p, i) => {
+        const [year, mon] = p.month.split('-');
+        const label = MONTH_NAMES[parseInt(mon, 10) - 1].substring(0, 3);
+        svg += `<text x="${p.x}" y="${padT + cH + 18}" text-anchor="middle" font-size="12" fill="#666">${label}</text>`;
+        if (i === 0 || p.month.split('-')[0] !== pts[i - 1].month.split('-')[0]) {
+            svg += `<text x="${p.x}" y="${padT + cH + 34}" text-anchor="middle" font-size="10" fill="#aaa">${year}</text>`;
+        }
+    });
+
+    // Y axis title
+    svg += `<text transform="rotate(-90)" x="${-(padT + cH / 2)}" y="14" text-anchor="middle" font-size="11" fill="#aaa">Points</text>`;
+
+    // Area fill under the line (only data points)
+    const dataPts = pts.filter(p => p.hasData);
+    if (dataPts.length > 1) {
+        const areaPath = `M ${dataPts[0].x} ${padT + cH} ` +
+            dataPts.map(p => `L ${p.x} ${p.y}`).join(' ') +
+            ` L ${dataPts[dataPts.length - 1].x} ${padT + cH} Z`;
+        svg += `<path d="${areaPath}" fill="url(#pgLineGrad)" opacity="0.08"/>`;
+
+        // Line
+        const linePath = dataPts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+        svg += `<path d="${linePath}" fill="none" stroke="url(#pgLineGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#pgGlow)"/>`;
+    }
+
+    // Nodes + stars + labels
+    pts.forEach((p, i) => {
+        // Find delta vs previous month that had data
+        let delta = null;
+        if (p.hasData) {
+            for (let j = i - 1; j >= 0; j--) {
+                if (pts[j].hasData) { delta = p.points - pts[j].points; break; }
+            }
+        }
+
+        if (p.hasData) {
+            // Stack: delta (top) → points → star → dot
+            const hasStar = p.bonusCompleted;
+            const starOffset = hasStar ? 22 : 0;
+            const deltaOffset = delta !== null ? 14 : 0;
+
+            // Points label
+            if (p.points > 0) {
+                const pLabelY = p.y - 16 - starOffset - deltaOffset;
+                svg += `<text x="${p.x}" y="${pLabelY}" text-anchor="middle" font-size="11" font-weight="700" fill="#667eea">${p.points}</text>`;
+            }
+            // Delta label
+            if (delta !== null) {
+                const sign = delta > 0 ? '+' : '';
+                const deltaColor = delta > 0 ? '#2E8B57' : delta < 0 ? '#c0392b' : '#aaa';
+                const dLabelY = p.y - 16 - starOffset - deltaOffset + 12;
+                svg += `<text x="${p.x}" y="${dLabelY}" text-anchor="middle" font-size="10" font-weight="600" fill="${deltaColor}">${sign}${delta}</text>`;
+            }
+            // Star for bonus
+            if (hasStar) {
+                svg += `<text x="${p.x}" y="${p.y - 20}" text-anchor="middle" font-size="18" filter="url(#pgGlow)">⭐</text>`;
+            }
+            // Dot
+            svg += `<g><circle cx="${p.x}" cy="${p.y}" r="7" fill="url(#pgDotGrad)" stroke="white" stroke-width="2.5"/>`;
+            const [yr, mo] = p.month.split('-');
+            const mName = MONTH_NAMES[parseInt(mo, 10) - 1];
+            const deltaStr = delta !== null ? ` (${delta >= 0 ? '+' : ''}${delta})` : '';
+            svg += `<title>${mName} ${yr}: ${p.points} pts${deltaStr}${p.bonusCompleted ? ' ⭐ Bonus!' : ''}</title></g>`;
+        } else {
+            // Hollow dot for months with no ladder set
+            svg += `<g><circle cx="${p.x}" cy="${p.y}" r="5" fill="white" stroke="#ccc" stroke-width="2"/>`;
+            const [yr, mo] = p.month.split('-');
+            svg += `<title>${MONTH_NAMES[parseInt(mo, 10) - 1]} ${yr}: no ladder set</title></g>`;
+        }
+    });
+
+    svg += `</svg>`;
+    container.innerHTML = svg;
+}
+
+function initializeProgressView() {
+    const evolutionBtn = document.getElementById('evolutionBtn');
+    const backBtn = document.getElementById('backFromProgressBtn');
+    const progressSection = document.getElementById('progressSection');
+
+    const mainSections = [
+        document.querySelector('.stats-section'),
+        document.querySelector('.ladder-grid-section'),
+        document.querySelector('.filter-section'),
+        document.querySelector('.problems-section')
+    ];
+    const subtitleNav = document.querySelector('.subtitle-nav');
+    const evolutionLink = document.querySelector('.evolution-link-hint');
+
+    evolutionBtn.addEventListener('click', () => {
+        mainSections.forEach(s => s && (s.style.display = 'none'));
+        subtitleNav.style.visibility = 'hidden';
+        evolutionLink.style.display = 'none';
+        progressSection.style.display = 'block';
+        renderProgressChart();
+    });
+
+    backBtn.addEventListener('click', () => {
+        progressSection.style.display = 'none';
+        mainSections.forEach(s => s && (s.style.display = ''));
+        subtitleNav.style.visibility = '';
+        evolutionLink.style.display = '';
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     window.tracker = new BoulderingTracker(CURRENT_MONTH);
     initializeOverlay();
     initializeShareFunctionality();
+    initializeProgressView();
 
     updateSubtitle(CURRENT_MONTH);
     updateMonthNavButtons(CURRENT_MONTH);

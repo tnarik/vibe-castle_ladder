@@ -18,6 +18,7 @@
                 <p class="subtitle" id="subtitle">Track your progress month by month</p>
                 <button id="nextMonthBtn" class="month-nav-btn" title="Next month" disabled>&#8250;</button>
             </div>
+            <p class="evolution-link-hint"><button id="evolutionBtn" class="evolution-link">see your progress across the months</button></p>
         </header>
 
         <main>
@@ -121,7 +122,16 @@
                     <!-- Problems will be dynamically inserted here by JavaScript -->
                 </div>
             </section>
-        </main>
+
+            <!-- Progress Evolution View -->
+            <section id="progressSection" class="progress-section" style="display:none">
+                <div class="progress-section-header">
+                    <button id="backFromProgressBtn" class="back-btn">see each month</button>
+                    <h2>Progress Over Time</h2>
+                </div>
+                <div id="progressChart" class="progress-chart-container"></div>
+                <p class="progress-hint">⭐ = bonus problem completed that month</p>
+            </section>
     </div>
 
     <!-- Info Overlay -->
