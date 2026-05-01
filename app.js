@@ -260,21 +260,21 @@ const PROBLEMS_BY_MONTH = {
         { id: 21, ouyId: "28d4b515-f11f-4792-965c-c57f2307a1af", name: "Ladder Bonus", color: "#31c61d", area: "Froggy" },
     ],
     '2026-05': [
-        { id: 1, ouyId: "86ea1c6f-098e-49be-ac4d-11933c60e78b", name: "Ladder 1", color: "#polka", area: "Mezz" },
+        { id: 1, ouyId: "86ea1c6f-098e-49be-ac4d-11933c60e78b", name: "Ladder 1", color: "#fafafa #d71515", area: "Mezz" },
         { id: 2, ouyId: "2d8ca775-3a10-4679-a2fe-c2a78bf8e548", name: "Ladder 2", color: "#31c61d", area: "Mezz" },
         { id: 3, ouyId: "27db65ca-af96-4c51-b7f3-8546542fbc7c", name: "Ladder 3", color: "#020707", area: "Panels" },
         { id: 4, ouyId: "27e09365-30dc-4d61-bb78-32cf57dda662", name: "Ladder 4", color: "#31c61d", area: "Trackside" },
-        { id: 5, ouyId: "71407767-03d3-4bc7-aacc-e2d6042583c7", name: "Ladder 5", color: "#swirl", area: "Stacks - Stack" },
+        { id: 5, ouyId: "71407767-03d3-4bc7-aacc-e2d6042583c7", name: "Ladder 5", color: "#fbff09 #8338EC", area: "Stacks - Stack" },
         { id: 6, ouyId: "ec7d9b36-8550-47c6-846c-1c7c48f4654b", name: "Ladder 6", color: "#ffb20b", area: "Trackside" },
         { id: 7, ouyId: "65e2955f-830f-4218-a6a9-e96c354a75fe", name: "Ladder 7", color: "#ffb20b", area: "Stacks - Fang" },
         { id: 8, ouyId: "bdba540d-05df-4c04-974e-9a2a81602ee1", name: "Ladder 8", color: "#2458ac", area: "Mezz" },
         { id: 9, ouyId: "e4c729c3-4249-4afb-a315-0c0876f4574c", name: "Ladder 9", color: "#2458ac", area: "Pen" },
         { id: 10, ouyId: "bb74d419-b8d6-44ce-b3d6-ca148892e327", name: "Ladder 10", color: "#fafafa", area: "Trackside" },
         { id: 11, ouyId: "9bcb409f-27c7-4497-bf05-330683756d6f", name: "Ladder 11", color: "#d78ac5", area: "Trackside" },
-        { id: 12, ouyId: "39e9d5d4-e022-4d3a-b35b-2469729f04eb", name: "Ladder 12", color: "#polka", area: "Panels" },
-        { id: 13, ouyId: "d08fd0f8-c87f-47d2-a82e-2d2630dee6f7", name: "Ladder 13", color: "#swirl", area: "Panels" },
+        { id: 12, ouyId: "39e9d5d4-e022-4d3a-b35b-2469729f04eb", name: "Ladder 12", color: "#fafafa #d71515", area: "Panels" },
+        { id: 13, ouyId: "d08fd0f8-c87f-47d2-a82e-2d2630dee6f7", name: "Ladder 13", color: "#fbff09 #8338EC", area: "Panels" },
         { id: 14, ouyId: "542a42ab-39fb-4872-9b22-35ab10f3bfbc", name: "Ladder 14", color: "#2458ac", area: "Trackside" },
-        { id: 15, ouyId: "00583465-30a5-4cd1-a263-cecbbb633c13", name: "Ladder 15", color: "#d71515", area: "Stacks -" },
+        { id: 15, ouyId: "00583465-30a5-4cd1-a263-cecbbb633c13", name: "Ladder 15", color: "#d71515", area: "Stacks - Lemon" },
         { id: 16, ouyId: "3bd8e8f9-3438-4687-be08-957df0d9d095", name: "Ladder 16", color: "#020707", area: "Trackside" },
         { id: 17, ouyId: "9dfe90f4-adf9-45a7-ad43-e3a8e8055922", name: "Ladder 17", color: "#094fff", area: "Trackside" },
         { id: 18, ouyId: "8a3de425-fa48-43e5-96a4-f0d060c8cdc8", name: "Ladder 18", color: "#d78ac5", area: "Trackside" },
@@ -476,6 +476,14 @@ class BoulderingTracker {
         }).sort((a, b) => a.id - b.id); // Sort by id to ensure consistent display order
     }
 
+    getColorIndicatorStyle(color) {
+        const parts = (color || '').trim().split(/\s+/);
+        if (parts.length === 2 && parts[0].startsWith('#') && parts[1].startsWith('#')) {
+            return `background: linear-gradient(135deg, ${parts[0]} 50%, ${parts[1]} 50%)`;
+        }
+        return `background-color: ${color}`;
+    }
+
     renderProblems() {
         const problemsList = document.getElementById('problemsList');
         const filteredProblems = this.getFilteredProblems();
@@ -497,7 +505,7 @@ class BoulderingTracker {
                     <div class="problem-info">
                         <span class="problem-name">${problem.name}</span>
                         <span class="problem-location">(at ${problem.area})</span>
-                        <div class="problem-color-indicator" style="background-color: ${problem.color}"></div>
+                        <div class="problem-color-indicator" style="${this.getColorIndicatorStyle(problem.color)}"></div>
                         <span class="problem-points ${isBonus ? 'bonus-indicator' : ''}">${pointsDisplay}</span>
                     </div>
                     <div class="problem-status">
