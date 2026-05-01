@@ -16,7 +16,7 @@ function encodeMonthProgressToShareCode(problems, month) {
     const monthDigits = month.replace('-', ''); // "2026-02" -> "202602"
     const monthDecimal = parseInt(monthDigits, 10);
     const monthHex = monthDecimal.toString(16).padStart(5, '0');
-    
+
     // Map status to single digit (0-4)
     const statusToDigit = {
         null: '0',
@@ -26,13 +26,13 @@ function encodeMonthProgressToShareCode(problems, month) {
         [COMPLETION_STATUS.THIRD_ATTEMPT]: '3',
         [COMPLETION_STATUS.FOURTH_PLUS]: '4'
     };
-    
+
     // Sort problems by id before encoding to ensure consistent order
     const sortedProblems = problems.slice().sort((a, b) => a.id - b.id);
-    
+
     // Convert all 21 problems to digits
     const digits = sortedProblems.map(p => statusToDigit[p.status] || '0').join('');
-    
+
     // Break into chunks: 5-5-5-5-1
     const chunks = [
         digits.slice(0, 5),
@@ -41,7 +41,7 @@ function encodeMonthProgressToShareCode(problems, month) {
         digits.slice(15, 20),
         digits.slice(20, 21)
     ];
-    
+
     // Encode each chunk to hex (base-5 → decimal → hex)
     const encoded = chunks.map((chunk, i) => {
         const decimal = parseInt(chunk, 5);
@@ -49,7 +49,7 @@ function encodeMonthProgressToShareCode(problems, month) {
         // Pad first 4 chunks to 3 chars, last chunk to 1 char
         return hex.padStart(i < 4 ? 3 : 1, '0');
     });
-    
+
     // Combine month preamble + problem data
     // Format: MMMMM + PPPPPPPPPPPPP (5 + 13 = 18 chars)
     return monthHex + encoded.join('');
@@ -84,7 +84,7 @@ function decodeMonthShareCodeToProgress(shareCode) {
         console.error('Invalid share code length:', shareCode.length, 'expected 18');
         return null;
     }
-    
+
     // Extract month preamble (first 5 chars)
     const monthHex = shareCode.slice(0, 5);
     const monthDecimal = parseInt(monthHex, 16);
@@ -92,10 +92,10 @@ function decodeMonthShareCodeToProgress(shareCode) {
     const year = monthDigits.slice(0, 4);
     const month = monthDigits.slice(4, 6);
     const decodedMonth = `${year}-${month}`;
-    
+
     // Extract problem data (remaining 13 chars)
     const problemData = shareCode.slice(5);
-    
+
     // Break into chunks: 3-3-3-3-1
     const chunks = [
         problemData.slice(0, 3),
@@ -104,7 +104,7 @@ function decodeMonthShareCodeToProgress(shareCode) {
         problemData.slice(9, 12),
         problemData.slice(12, 13)
     ];
-    
+
     // Decode each chunk (hex → decimal → base-5)
     const decoded = chunks.map((hex, i) => {
         const decimal = parseInt(hex, 16);
@@ -112,7 +112,7 @@ function decodeMonthShareCodeToProgress(shareCode) {
         // Pad first 4 chunks to 5 digits, last chunk to 1 digit
         return base5.padStart(i < 4 ? 5 : 1, '0');
     }).join('');
-    
+
     // Map digits back to status
     const digitToStatus = {
         '0': null,
@@ -121,18 +121,18 @@ function decodeMonthShareCodeToProgress(shareCode) {
         '3': COMPLETION_STATUS.THIRD_ATTEMPT,
         '4': COMPLETION_STATUS.FOURTH_PLUS
     };
-    
+
     // Convert to array of statuses
     const statuses = decoded.split('').map(d => digitToStatus[d]);
-    
+
     // Get problems for this month and sort by id
     const monthProblems = (PROBLEMS_BY_MONTH[decodedMonth] || []).sort((a, b) => a.id - b.id);
-    
+
     if (!monthProblems) {
         console.error('No problem data found for month:', decodedMonth);
         return null;
     }
-    
+
     // Build localStorage-compatible JSON format
     const progressMap = {};
     monthProblems.forEach((problem, index) => {
@@ -141,12 +141,12 @@ function decodeMonthShareCodeToProgress(shareCode) {
             progressMap[problem.ouyId] = status;
         }
     });
-    
+
     // Build the full localStorage structure
     const localStorageData = {
         [decodedMonth]: progressMap
     };
-    
+
     return {
         shareCode: shareCode,
         month: decodedMonth,
@@ -258,6 +258,29 @@ const PROBLEMS_BY_MONTH = {
         { id: 19, ouyId: "c773ef09-716c-4976-8a8b-4f20fd6c4390", name: "Ladder 19", color: "#ffb20b", area: "Loft" },
         { id: 20, ouyId: "8490b3d6-b92f-43bf-a176-d40379c01a23", name: "Ladder 20", color: "#d71515", area: "Slabs" },
         { id: 21, ouyId: "28d4b515-f11f-4792-965c-c57f2307a1af", name: "Ladder Bonus", color: "#31c61d", area: "Froggy" },
+    ],
+    '2026-05': [
+        { id: 1, ouyId: "86ea1c6f-098e-49be-ac4d-11933c60e78b", name: "Ladder 1", color: "#polka", area: "Mezz" },
+        { id: 2, ouyId: "2d8ca775-3a10-4679-a2fe-c2a78bf8e548", name: "Ladder 2", color: "#31c61d", area: "Mezz" },
+        { id: 3, ouyId: "27db65ca-af96-4c51-b7f3-8546542fbc7c", name: "Ladder 3", color: "#020707", area: "Panels" },
+        { id: 4, ouyId: "27e09365-30dc-4d61-bb78-32cf57dda662", name: "Ladder 4", color: "#31c61d", area: "Trackside" },
+        { id: 5, ouyId: "71407767-03d3-4bc7-aacc-e2d6042583c7", name: "Ladder 5", color: "#swirl", area: "Stacks - Stack" },
+        { id: 6, ouyId: "ec7d9b36-8550-47c6-846c-1c7c48f4654b", name: "Ladder 6", color: "#ffb20b", area: "Trackside" },
+        { id: 7, ouyId: "65e2955f-830f-4218-a6a9-e96c354a75fe", name: "Ladder 7", color: "#ffb20b", area: "Stacks - Fang" },
+        { id: 8, ouyId: "bdba540d-05df-4c04-974e-9a2a81602ee1", name: "Ladder 8", color: "#2458ac", area: "Mezz" },
+        { id: 9, ouyId: "e4c729c3-4249-4afb-a315-0c0876f4574c", name: "Ladder 9", color: "#2458ac", area: "Pen" },
+        { id: 10, ouyId: "bb74d419-b8d6-44ce-b3d6-ca148892e327", name: "Ladder 10", color: "#fafafa", area: "Trackside" },
+        { id: 11, ouyId: "9bcb409f-27c7-4497-bf05-330683756d6f", name: "Ladder 11", color: "#d78ac5", area: "Trackside" },
+        { id: 12, ouyId: "39e9d5d4-e022-4d3a-b35b-2469729f04eb", name: "Ladder 12", color: "#polka", area: "Panels" },
+        { id: 13, ouyId: "d08fd0f8-c87f-47d2-a82e-2d2630dee6f7", name: "Ladder 13", color: "#swirl", area: "Panels" },
+        { id: 14, ouyId: "542a42ab-39fb-4872-9b22-35ab10f3bfbc", name: "Ladder 14", color: "#2458ac", area: "Trackside" },
+        { id: 15, ouyId: "00583465-30a5-4cd1-a263-cecbbb633c13", name: "Ladder 15", color: "#d71515", area: "Stacks -" },
+        { id: 16, ouyId: "3bd8e8f9-3438-4687-be08-957df0d9d095", name: "Ladder 16", color: "#020707", area: "Trackside" },
+        { id: 17, ouyId: "9dfe90f4-adf9-45a7-ad43-e3a8e8055922", name: "Ladder 17", color: "#094fff", area: "Trackside" },
+        { id: 18, ouyId: "8a3de425-fa48-43e5-96a4-f0d060c8cdc8", name: "Ladder 18", color: "#d78ac5", area: "Trackside" },
+        { id: 19, ouyId: "adfedd89-28dd-4851-b12c-074d8d33e131", name: "Ladder 19", color: "#ffb20b", area: "Mezz" },
+        { id: 20, ouyId: "c933470a-f166-489e-8c8a-22be69f365dc", name: "Ladder 20", color: "#d9bb9b", area: "Pen" },
+        { id: 21, ouyId: "6ad1c8a7-f6fb-475e-ace9-1341d5bec100", name: "Ladder Bonus", color: "#ffb20b", area: "Mezz" },
     ]
 };
 
@@ -319,19 +342,19 @@ class BoulderingTracker {
 
     loadFromLocalStorage() {
         const savedProgress = localStorage.getItem('bouldering-progress');
-        
+
         // Get problems for current month and sort by id
         const problemsData = (PROBLEMS_BY_MONTH[this.month] || []).sort((a, b) => a.id - b.id);
-        
+
         if (savedProgress) {
             const allProgressData = JSON.parse(savedProgress);
             // Get progress for current month
             const progressMap = allProgressData[this.month] || {};
-            
+
             // Merge saved progress with problem data (using ouyId as key)
             this.problems = problemsData.map(problem => {
                 let status = progressMap[problem.ouyId];
-                
+
                 // Migrate old status values to new ones
                 if (status === 'not-started' || status === 'in-progress') {
                     status = null; // Treat as not-completed (no need to store)
@@ -339,12 +362,12 @@ class BoulderingTracker {
                     // Old "completed" becomes "4th-plus" (lowest completion)
                     status = COMPLETION_STATUS.FOURTH_PLUS;
                 }
-                
+
                 // If no status or not-completed, use null (implicit not-completed)
                 if (!status || status === COMPLETION_STATUS.NOT_COMPLETED) {
                     status = null;
                 }
-                
+
                 return {
                     ...problem,
                     status: status
@@ -363,7 +386,7 @@ class BoulderingTracker {
         // Load existing data for all months
         const savedProgress = localStorage.getItem('bouldering-progress');
         const allProgressData = savedProgress ? JSON.parse(savedProgress) : {};
-        
+
         // Update only current month's data (using ouyId as key)
         const monthProgressMap = {};
         this.problems.forEach(problem => {
@@ -371,10 +394,10 @@ class BoulderingTracker {
                 monthProgressMap[problem.ouyId] = problem.status;
             }
         });
-        
+
         // Store with month key
         allProgressData[this.month] = monthProgressMap;
-        
+
         localStorage.setItem('bouldering-progress', JSON.stringify(allProgressData));
     }
 
@@ -387,7 +410,7 @@ class BoulderingTracker {
             } else {
                 problem.status = newStatus;
             }
-            
+
             this.saveToLocalStorage();
             this.renderProblems();
             this.updateLadderGrid();
@@ -409,26 +432,26 @@ class BoulderingTracker {
 
     getCompletionStats() {
         const total = this.problems.length;
-        const completed = this.problems.filter(p => 
+        const completed = this.problems.filter(p =>
             p.status && p.status !== COMPLETION_STATUS.NOT_COMPLETED
         ).length;
-        const firstAttempts = this.problems.filter(p => 
+        const firstAttempts = this.problems.filter(p =>
             p.status === COMPLETION_STATUS.FIRST_ATTEMPT
         ).length;
         const points = this.calculateTotalPoints();
         // Max points excludes bonus problem (20 regular problems × 10 points)
         const maxPoints = (total - 1) * 10; // Subtract 1 for bonus problem
-        
+
         return { total, completed, firstAttempts, points, maxPoints };
     }
 
     updateStats() {
         const stats = this.getCompletionStats();
-        
+
         document.getElementById('firstAttempts').textContent = stats.firstAttempts;
         document.getElementById('totalPoints').textContent = stats.points;
         document.getElementById('maxPoints').textContent = stats.maxPoints;
-        
+
         // Update progress as "completed / total"
         document.getElementById('progressPercentage').textContent = `${stats.completed}/${stats.total}`;
     }
@@ -439,7 +462,7 @@ class BoulderingTracker {
 
         return this.problems.filter(problem => {
             const matchesArea = areaFilter === 'all' || problem.area === areaFilter;
-            
+
             let matchesStatus = true;
             if (statusFilter === 'completed') {
                 matchesStatus = problem.status && problem.status !== COMPLETION_STATUS.NOT_COMPLETED;
@@ -448,7 +471,7 @@ class BoulderingTracker {
             } else if (statusFilter !== 'all') {
                 matchesStatus = problem.status === statusFilter;
             }
-            
+
             return matchesArea && matchesStatus;
         }).sort((a, b) => a.id - b.id); // Sort by id to ensure consistent display order
     }
@@ -468,7 +491,7 @@ class BoulderingTracker {
             const points = isBonus ? 0 : (problem.status ? POINTS[problem.status] : 0);
             const pointsDisplay = isBonus ? '🎟️ Bonus' : `${points} pts`;
             const statusClass = problem.status || COMPLETION_STATUS.NOT_COMPLETED;
-            
+
             return `
                 <div class="problem-card ${statusClass} ${isBonus ? 'bonus-problem' : ''}" data-ouy-id="${problem.ouyId}">
                     <div class="problem-info">
@@ -478,26 +501,26 @@ class BoulderingTracker {
                         <span class="problem-points ${isBonus ? 'bonus-indicator' : ''}">${pointsDisplay}</span>
                     </div>
                     <div class="problem-status">
-                        <button class="attempt-btn first ${problem.status === COMPLETION_STATUS.FIRST_ATTEMPT ? 'active' : ''}" 
-                                data-ouy-id="${problem.ouyId}" 
+                        <button class="attempt-btn first ${problem.status === COMPLETION_STATUS.FIRST_ATTEMPT ? 'active' : ''}"
+                                data-ouy-id="${problem.ouyId}"
                                 data-status="${COMPLETION_STATUS.FIRST_ATTEMPT}"
                                 title="${isBonus ? 'Completed - enters raffle' : '10 points'}">
                             1st
                         </button>
-                        <button class="attempt-btn second ${problem.status === COMPLETION_STATUS.SECOND_ATTEMPT ? 'active' : ''}" 
-                                data-ouy-id="${problem.ouyId}" 
+                        <button class="attempt-btn second ${problem.status === COMPLETION_STATUS.SECOND_ATTEMPT ? 'active' : ''}"
+                                data-ouy-id="${problem.ouyId}"
                                 data-status="${COMPLETION_STATUS.SECOND_ATTEMPT}"
                                 title="${isBonus ? 'Completed - enters raffle' : '7 points'}">
                             2nd
                         </button>
-                        <button class="attempt-btn third ${problem.status === COMPLETION_STATUS.THIRD_ATTEMPT ? 'active' : ''}" 
-                                data-ouy-id="${problem.ouyId}" 
+                        <button class="attempt-btn third ${problem.status === COMPLETION_STATUS.THIRD_ATTEMPT ? 'active' : ''}"
+                                data-ouy-id="${problem.ouyId}"
                                 data-status="${COMPLETION_STATUS.THIRD_ATTEMPT}"
                                 title="${isBonus ? 'Completed - enters raffle' : '4 points'}">
                             3rd
                         </button>
-                        <button class="attempt-btn fourth ${problem.status === COMPLETION_STATUS.FOURTH_PLUS ? 'active' : ''}" 
-                                data-ouy-id="${problem.ouyId}" 
+                        <button class="attempt-btn fourth ${problem.status === COMPLETION_STATUS.FOURTH_PLUS ? 'active' : ''}"
+                                data-ouy-id="${problem.ouyId}"
                                 data-status="${COMPLETION_STATUS.FOURTH_PLUS}"
                                 title="${isBonus ? 'Completed - enters raffle' : '1 point'}">
                             4+
@@ -529,7 +552,7 @@ class BoulderingTracker {
             const ladderBox = document.querySelector(`.ladder-box[data-ladder="${problem.id}"]`);
             if (ladderBox) {
                 // Add appropriate class based on status (null = no class added)
-                
+
                 // Add appropriate class based on status (null = no class added)
                 if (problem.status) {
                     switch(problem.status) {
@@ -554,7 +577,7 @@ class BoulderingTracker {
     populateAreaFilter() {
         const areas = [...new Set(this.problems.map(p => p.area))];
         const areaFilter = document.getElementById('areaFilter');
-        
+
         // Remove all options except the first ("All Areas") before repopulating
         while (areaFilter.options.length > 1) {
             areaFilter.remove(1);
@@ -567,7 +590,7 @@ class BoulderingTracker {
             option.textContent = area;
             areaFilter.appendChild(option);
         });
-        
+
         areaFilter.selectedIndex = 0; // explicitly reset to "All Areas"
         const event = new Event('change', { bubbles: true });
         areaFilter.dispatchEvent(event); // dispatch change event
@@ -584,40 +607,40 @@ class BoulderingTracker {
             box.addEventListener('click', this._onLadderClick);
         });
     }
-    
+
     scrollToProblem(ladderId) {
         const problem = this.problems.find(p => p.id === ladderId);
         if (!problem) return;
-        
+
         // Check if the problem's area is currently filtered out
         const areaFilter = document.getElementById('areaFilter');
         if (areaFilter.value !== 'all' && areaFilter.value !== problem.area) {
             // Change filter to show this problem's area
             areaFilter.value = problem.area;
         }
-        
+
         // Check if the problem's completion status is filtered out
         const statusFilter = document.getElementById('statusFilter');
         const isCompleted = problem.status && problem.status !== COMPLETION_STATUS.NOT_COMPLETED;
-        
+
         // If status filter would hide this problem, set it to 'all'
         if ((statusFilter.value === 'completed' && !isCompleted) ||
             (statusFilter.value === 'in-progress' && isCompleted)) {
             statusFilter.value = 'all';
         }
-        
+
         // Re-render problems with updated filters
         this.renderProblems();
-        
+
         // Find the problem card in the DOM (after re-rendering)
         const problemCard = document.querySelector(`.problem-card[data-ouy-id="${problem.ouyId}"]`);
         if (problemCard) {
             // Scroll to the problem card with smooth behavior
             problemCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
+
             // Add flash animation
             problemCard.classList.add('flash-highlight');
-            
+
             // Remove animation class after it completes
             setTimeout(() => {
                 problemCard.classList.remove('flash-highlight');
@@ -905,16 +928,16 @@ function initializeOverlay() {
     const closeOverlayButton = document.getElementById('closeOverlayButton');
     const expandDetailsBtn = document.getElementById('expandDetailsBtn');
     const expandableDetails = document.getElementById('expandableDetails');
-    
+
     // Check if user has seen the overlay before
     const hasSeenOverlay = localStorage.getItem('hasSeenInfoOverlay');
-    
+
     // Show overlay on first visit
     if (!hasSeenOverlay) {
         overlay.classList.add('active');
         localStorage.setItem('hasSeenInfoOverlay', 'true');
     }
-    
+
     // Expand/collapse details
     expandDetailsBtn.addEventListener('click', () => {
         const isExpanded = expandableDetails.classList.contains('expanded');
@@ -926,12 +949,12 @@ function initializeOverlay() {
             expandDetailsBtn.textContent = 'hide details';
         }
     });
-    
+
     // Open overlay when info button is clicked
     infoButton.addEventListener('click', () => {
         overlay.classList.add('active');
     });
-    
+
     // Close overlay when X button is clicked
     closeOverlay.addEventListener('click', () => {
         overlay.classList.remove('active');
@@ -939,7 +962,7 @@ function initializeOverlay() {
         expandableDetails.classList.remove('expanded');
         expandDetailsBtn.textContent = 'click here for details';
     });
-    
+
     // Close overlay when "Got it!" button is clicked
     closeOverlayButton.addEventListener('click', () => {
         overlay.classList.remove('active');
@@ -947,7 +970,7 @@ function initializeOverlay() {
         expandableDetails.classList.remove('expanded');
         expandDetailsBtn.textContent = 'click here for details';
     });
-    
+
     // Close overlay when clicking outside the content
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
@@ -957,7 +980,7 @@ function initializeOverlay() {
             expandDetailsBtn.textContent = 'click here for details';
         }
     });
-    
+
     // Close overlay on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && overlay.classList.contains('active')) {
@@ -976,9 +999,9 @@ function initializeOverlay() {
 function checkForShareCode() {
     // Check URL hash for share code (e.g., example.com/#3189361a61a61a61a2)
     const hash = window.location.hash.slice(1); // Remove the # symbol
-    
+
     const shareCode = hash || null;
-    
+
     if (shareCode && shareCode.length > 0 && shareCode.length % 18 === 0) {
         console.log('='.repeat(60));
         console.log('SHARE CODE DETECTED IN URL');
@@ -986,9 +1009,9 @@ function checkForShareCode() {
         console.log('Share code:', shareCode);
         console.log('Months in code:', shareCode.length / 18);
         console.log('');
-        
+
         const decoded = decodeShareCodeToProgress(shareCode);
-        
+
         if (decoded) {
             console.log('Decoded successfully!');
             console.log('');
@@ -997,10 +1020,10 @@ function checkForShareCode() {
             console.log('localStorage-compatible JSON:');
             console.log(JSON.stringify(decoded.localStorageData, null, 2));
             console.log('');
-            
+
             // Check if there's existing progress
             const existingProgress = localStorage.getItem('bouldering-progress');
-            
+
             if (!existingProgress) {
                 // No existing progress - import directly
                 importProgress(decoded.localStorageData);
@@ -1059,17 +1082,17 @@ function showImportConfirmation(localStorageData) {
     const overlay = document.getElementById('importConfirmOverlay');
     const confirmButton = document.getElementById('confirmImportButton');
     const cancelButton = document.getElementById('cancelImportButton');
-    
+
     // Show overlay
     overlay.classList.add('active');
-    
+
     // Handle confirm button
     const handleConfirm = () => {
         importProgress(localStorageData);
         overlay.classList.remove('active');
         cleanup();
     };
-    
+
     // Handle cancel button
     const handleCancel = () => {
         // Remove share code from URL without importing
@@ -1077,7 +1100,7 @@ function showImportConfirmation(localStorageData) {
         overlay.classList.remove('active');
         cleanup();
     };
-    
+
     // Cleanup function to remove event listeners
     const cleanup = () => {
         confirmButton.removeEventListener('click', handleConfirm);
@@ -1085,21 +1108,21 @@ function showImportConfirmation(localStorageData) {
         overlay.removeEventListener('click', handleOverlayClick);
         document.removeEventListener('keydown', handleEscape);
     };
-    
+
     // Close overlay when clicking outside
     const handleOverlayClick = (e) => {
         if (e.target === overlay) {
             handleCancel();
         }
     };
-    
+
     // Close overlay on Escape key
     const handleEscape = (e) => {
         if (e.key === 'Escape' && overlay.classList.contains('active')) {
             handleCancel();
         }
     };
-    
+
     // Attach event listeners
     confirmButton.addEventListener('click', handleConfirm);
     cancelButton.addEventListener('click', handleCancel);
@@ -1160,26 +1183,26 @@ function initializeShareFunctionality() {
             setMonthMode();
         }
     });
-    
+
     // Close share overlay
     closeShareOverlay.addEventListener('click', () => {
         shareOverlay.classList.remove('active');
     });
-    
+
     // Close overlay when clicking outside
     shareOverlay.addEventListener('click', (e) => {
         if (e.target === shareOverlay) {
             shareOverlay.classList.remove('active');
         }
     });
-    
+
     // Close overlay on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && shareOverlay.classList.contains('active')) {
             shareOverlay.classList.remove('active');
         }
     });
-    
+
     // Copy link to clipboard
     copyLinkButton.addEventListener('click', async () => {
         const url = shareLinkInput.value;
@@ -1199,10 +1222,10 @@ function showToast(message, type = 'default', duration = 3000) {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
     const toastIcon = document.getElementById('toastIcon');
-    
+
     // Set message
     toastMessage.textContent = message;
-    
+
     // Set icon and style based on type
     if (type === 'success') {
         toastIcon.textContent = '✓';
@@ -1211,9 +1234,9 @@ function showToast(message, type = 'default', duration = 3000) {
         toastIcon.textContent = '';
         toast.classList.remove('success');
     }
-    
+
     toast.classList.add('show');
-    
+
     // Hide toast after specified duration
     setTimeout(() => {
         toast.classList.remove('show');
