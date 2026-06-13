@@ -48,7 +48,7 @@
     "2026-04": [
         { "id": 1, "ouyId": "16e4ad1c-9775-48cd-8891-57249465eb54", "name": "Ladder 1", "color": "#d71515", "area": "Slabs" },
         { "id": 2, "ouyId": "72d26d9a-04d5-4405-ad03-d0aa4bd852f7", "name": "Ladder 2", "color": "#d78ac5", "area": "Froggy" },
-        { "id": 3, "ouyId": "e184318c-2738-4eea-ad67-396b68e7297b", "name": "Ladder 3", "color": "#fafafa94", "area": "Slabs" },
+        { "id": 3, "ouyId": "e184318c-2738-4eea-ad67-396b68e7297b", "name": "Ladder 3", "color": "#808080", "area": "Slabs" },
         { "id": 4, "ouyId": "bba72864-72c7-4a96-b6ec-cdaf1dbbfc7f", "name": "Ladder 4", "color": "#2458ac", "area": "Comp Wall" },
         { "id": 5, "ouyId": "f0ca0b44-3645-4458-b4cc-73edc421f294", "name": "Ladder 5", "color": "#d78ac5", "area": "Loft" },
         { "id": 6, "ouyId": "8ef16124-5c99-4acc-8f9d-e97c69ea9861", "name": "Ladder 6", "color": "#d78ac5", "area": "Loft Bloc" },
@@ -92,8 +92,8 @@
         { "id": 21, "ouyId": "6ad1c8a7-f6fb-475e-ace9-1341d5bec100", "name": "Ladder Bonus", "color": "#ffb20b", "area": "Mezz" }
     ],
     "2026-06": [
-        { "id": 1, "ouyId": "be7e7644-3d41-4585-8353-3bc7adac4b46", "name": "Ladder 01", "color": "#fafafa94", "area":"Slabs "},
-        { "id": 2, "ouyId": "4e270123-5f96-409b-a39a-532e64649034", "name": "Ladder 02", "color": "#fafafa94", "area":"Trackside "},
+        { "id": 1, "ouyId": "be7e7644-3d41-4585-8353-3bc7adac4b46", "name": "Ladder 01", "color": "#808080", "area":"Slabs "},
+        { "id": 2, "ouyId": "4e270123-5f96-409b-a39a-532e64649034", "name": "Ladder 02", "color": "#808080", "area":"Trackside "},
         { "id": 3, "ouyId": "c288c04d-a4e6-4e4e-ba58-38b9bca84006", "name": "Ladder 03", "color": "#31c61d", "area":"Froggy "},
         { "id": 4, "ouyId": "f8b8af3f-0eed-4598-bf7b-204612ffb31e", "name": "Ladder 04", "color": "#020707", "area":"Trackside "},
         { "id": 5, "ouyId": "1d30b9a4-cbc6-40b2-990c-97e8322aeba0", "name": "Ladder 05", "color": "#2458ac", "area":"Comp Wall "},
@@ -102,7 +102,7 @@
         { "id": 8, "ouyId": "368e1937-73f4-433d-90bd-e89aa44d25c6", "name": "Ladder 08", "color": "#8338EC", "area":"Slabs "},
         { "id": 9, "ouyId": "4c7cf020-1306-4d09-89ae-0af695355d7a", "name": "Ladder 09", "color": "#fafafa", "area":"Trackside "},
         { "id": 10, "ouyId": "bf239aac-b91f-4c89-add3-fbd60ae4a459", "name": "Ladder 10", "color": "#31c61d", "area":"Battleship "},
-        { "id": 11, "ouyId": "ce3c7067-d958-480b-9554-7429b7740e7f", "name": "Ladder 11", "color": "#fafafa", "area":"Froggy "},
+        { "id": 11, "ouyId": "ce3c7067-d958-480b-9554-7429b7740e7f", "name": "Ladder 11", "color": "#fafafa", "area":"Trackside "},
         { "id": 12, "ouyId": "95970221-c591-434e-99a6-91f9b28e0b21", "name": "Ladder 12", "color": "#d71515", "area":"Trackside "},
         { "id": 13, "ouyId": "fda0ccdf-f7e3-455f-8919-284590063cf2", "name": "Ladder 13", "color": "#ffb20b", "area":"Battleship "},
         { "id": 14, "ouyId": "164d873e-f6e4-41f3-8aba-0ea75680e0c9", "name": "Ladder 14", "color": "#2458ac", "area":"Comp Wall "},
