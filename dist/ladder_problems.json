@@ -129,7 +129,7 @@
         { "id": 12, "ouyId": "7da5ca28-bfd1-4b67-96d7-b95f44253220", "name": "Ladder 12", "color": "#2458ac", "area": "Battleship" },
         { "id": 13, "ouyId": "222421aa-7429-4287-98d0-e62e98f77b9f", "name": "Ladder 13", "color": "#fbff09", "area": "Loft Bloc" },
         { "id": 14, "ouyId": "e2329ad6-ba72-4e5f-b6fd-38a73a469e29", "name": "Ladder 14", "color": "#fafafa #d71515", "area": "Loft" },
-        { "id": 15, "ouyId": "374b3f26-ede5-4f2a-bc89-e6d86a8206f5", "name": "Ladder 15", "color": "#2458ac", "area": "Battleship" },
+        { "id": 15, "ouyId": "374b3f26-ede5-4f2a-bc89-e6d86a8206f5", "name": "Ladder 15", "color": "#d78ac5", "area": "Battleship" },
         { "id": 16, "ouyId": "d7d02746-6059-492e-b874-0eb1504ef289", "name": "Ladder 16", "color": "#2458ac", "area": "Loft Bloc" },
         { "id": 17, "ouyId": "e5ed1e83-780d-486d-942a-51b856f998fa", "name": "Ladder 17", "color": "#fafafa", "area": "Loft" },
         { "id": 18, "ouyId": "65f26f18-c9d4-4b03-a2c0-97a31169c081", "name": "Ladder 18", "color": "#ffb20b", "area": "Loft" },
